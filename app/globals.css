@@ -5,10 +5,11 @@
 body {
   background: white;
   color: black;
+  font-family: "TNR", serif;
 }
 
 @font-face {
-  font-family: "Departure Mono";
+  font-family: "Pixel";
   src: url("/fonts/DepartureMono-Regular.upYs3Yn6.woff2") format("woff2");
   font-weight: normal;
   font-style: normal;
@@ -16,19 +17,23 @@ body {
 }
 
 @font-face {
-  font-family: "et-book";
-  src: url("/fonts/et-book-roman-line-figures.woff") format("woff");
+  font-family: "TNR";
+  src: url("/fonts/et-book-roman-line-figures.CaA40oOf.woff") format("woff2");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
 }
 
 html {
-  font-family: "Departure Mono", monospace;
+  font-family: "TNR", serif;
+}
+
+.font-pixel {
+  font-family: "Pixel", monospace;
 }
 
 .font-serif {
-  font-family: "et-book", serif;
+  font-family: "TNR", serif;
 }
 
 @layer utilities {

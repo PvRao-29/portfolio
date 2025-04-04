@@ -229,7 +229,13 @@ export function TextScramble({
   }, [text])
 
   return (
-    <span ref={spanRef} tabIndex={0} role="text" onMouseOver={startAnimation} className="inline-block cursor-pointer">
+    <span
+      ref={spanRef}
+      tabIndex={0}
+      role="text"
+      onMouseOver={startAnimation}
+      className="inline-block cursor-pointer font-pixel"
+    >
       {displayText}
     </span>
   )
