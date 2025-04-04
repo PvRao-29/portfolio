@@ -104,12 +104,12 @@ export default function Home() {
               interested in the use of mathematical modeling and machine learning in real world predictive systems.
             </p>
             <p>
-              Currently, I work on red teaming LLMs @ Scale AI, specializing in probing a model's mathematical reasoning
-              and researching jailbreaking strategies.
+              Currently, I work as an engineer at Space Enterprise at Berkeley, where I simulate the effects of fin
+              flutter on rocket stability.
             </p>
             <p>
-              In addition to pushing the limits of machine cognition, I also work on sending mankind to space as an
-              engineer at Space Enterprise at Berkeley, where I simulate the effects of fin flutter on rocket stability.
+              In addition to sending mankind to space, I also work on pushing the limits of machine cognition. This summer
+              I will be forecasting enterprise decision making at o9 solutions as a part of their engineering team.
             </p>
             <p>
               In my spare time, you'll find me at the felt, punting with a VPIP of 70%. Surprisingly, I am a profitable
