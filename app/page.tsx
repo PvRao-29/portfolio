@@ -28,23 +28,22 @@ export default function Home() {
               I'm a first-year EECS major at UC Berkeley, minoring in Philosophy, originally from the Chicagoland area.
             </p>
             <p>
-              Currently, I work on red teaming LLM's @ Scale AI, where I specialize in probing a models mathematical
-              reasoning and researching jailbreaking strategies.
+              Currently, I work on red teaming LLMs @ Scale AI, specializing in probing a model's mathematical reasoning
+              and researching jailbreaking strategies.
             </p>
             <p>
-              In addition to to probing the limits of machine cognition, I also work on sending mankind to space as an
-              engineer at Space Enterprise at Berkeley, where I research the effects of fin flutter on rocket stability.
+              In addition to pushing the limits of machine cognition, I also work on sending mankind to space as an engineer
+              at Space Enterprise at Berkeley, where I research the effects of fin flutter on rocket stability.
             </p>
             <p>
-              In my spare time, you'll find me at the felt, punting with a VPIP of 70%. Surprisingly, I am a profitable
-              player.
+              In my spare time, you'll find me at the felt, punting with a VPIP of 70%. Surprisingly, I am a profitable player.
             </p>
             <p>
-              I thrive on creative problem-solving—whether it's modeling my expected value in Blackjack with advanced
-              card counting strategies or fine-tuning a rocket's trajectory to cut through hypersonic winds.
+              I thrive on creative problem-solving—whether it's modeling my expected value in Blackjack with advanced card
+              counting strategies or fine-tuning a rocket's trajectory to cut through hypersonic winds.
             </p>
             <p>
-              Feel free to reach out at{" "}
+              Always open to interesting conversations—reach me at{" "}
               <a className="" href="mailto:pranshu_rao@berkeley.edu">
                 pranshu_rao@berkeley.edu
               </a>
