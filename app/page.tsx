@@ -116,8 +116,8 @@ export default function Home() {
               player.
             </p>
             <p>
-              I thrive on creative problem-solving—whether it's modeling my expected value in Blackjack with advanced
-              card counting strategies or fine-tuning a rocket's trajectory to cut through hypersonic winds.
+              I thrive on creative problem-solving—whether it's quantifying uncertainty at the poker table or engineering
+              stability in the chaos of hypersonic flight.
             </p>
             <p>
               Always open to interesting conversations—reach me at{" "}

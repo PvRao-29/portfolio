@@ -3,7 +3,7 @@ import type { Metadata } from "next"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "About | pranshurao.com",
+  title: "Pranshu Rao",
   description: "The Personal website of Pranshu Rao.",
 }
 
