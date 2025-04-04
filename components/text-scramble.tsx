@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, forwardRef } from "react"
 
 interface TextScrambleProps {
   text: string
@@ -15,24 +15,44 @@ interface TextScrambleProps {
   overdrive?: boolean | number
   overflow?: boolean
   playOnMount?: boolean
+  onMouseOver?: () => void
+  onMouseLeave?: () => void
+  onAnimationStart?: () => void
+  onAnimationEnd?: () => void
 }
 
-export function TextScramble({
-  text,
-  speed = 0.75,
-  tick = 1,
-  step = 1,
-  chance = 1,
-  seed = 15,
-  scramble = 10,
-  ignore = [" "],
-  range = [65, 125],
-  overdrive = false,
-  overflow = true,
-  playOnMount = true,
-}: TextScrambleProps) {
+export const TextScramble = forwardRef<HTMLSpanElement, TextScrambleProps>(function TextScramble(
+  {
+    text,
+    speed = 0.75,
+    tick = 1,
+    step = 1,
+    chance = 1,
+    seed = 15,
+    scramble = 10,
+    ignore = [" "],
+    range = [65, 125],
+    overdrive = false,
+    overflow = true,
+    playOnMount = true,
+    onMouseOver,
+    onMouseLeave,
+    onAnimationStart,
+    onAnimationEnd,
+  },
+  ref,
+) {
   const [displayText, setDisplayText] = useState(text)
   const spanRef = useRef<HTMLSpanElement>(null)
+  const combinedRef = (node: HTMLSpanElement) => {
+    spanRef.current = node
+    if (typeof ref === "function") {
+      ref(node)
+    } else if (ref) {
+      ref.current = node
+    }
+  }
+
   const animationRef = useRef<number | null>(null)
   const lastUpdateRef = useRef(0)
   const tickCountRef = useRef(0)
@@ -40,6 +60,8 @@ export function TextScramble({
   const overdriveCharsRef = useRef(0)
   const charsRef = useRef<(string | number)[]>([])
   const frameTimeRef = useRef(1000 / (60 * speed))
+  const textRef = useRef(text)
+  const isAnimatingRef = useRef(false)
 
   // Helper functions
   function randomInt(min: number, max: number) {
@@ -155,6 +177,10 @@ export function TextScramble({
       if (animationRef.current !== null) {
         window.cancelAnimationFrame(animationRef.current)
         animationRef.current = null
+        isAnimatingRef.current = false
+        if (onAnimationEnd) {
+          onAnimationEnd()
+        }
       }
     }
 
@@ -192,12 +218,19 @@ export function TextScramble({
       animationRef.current = null
     }
 
+    isAnimatingRef.current = true
+    if (onAnimationStart) {
+      onAnimationStart()
+    }
+
     reset()
     animationRef.current = window.requestAnimationFrame(animate)
   }
 
   // Initialize
   useEffect(() => {
+    textRef.current = text
+
     if (playOnMount) {
       startAnimation()
     } else {
@@ -221,23 +254,31 @@ export function TextScramble({
     frameTimeRef.current = 1000 / (60 * speed)
   }, [speed])
 
-  // Reset when text changes
+  // Handle text changes without restarting animation
   useEffect(() => {
-    if (text) {
-      reset()
-    }
+    // Only update the text reference, don't restart animation
+    textRef.current = text
   }, [text])
+
+  const handleMouseOver = () => {
+    if (onMouseOver) {
+      onMouseOver()
+    } else {
+      startAnimation()
+    }
+  }
 
   return (
     <span
-      ref={spanRef}
+      ref={combinedRef}
       tabIndex={0}
       role="text"
-      onMouseOver={startAnimation}
+      onMouseOver={handleMouseOver}
+      onMouseLeave={onMouseLeave}
       className="inline-block cursor-pointer font-pixel"
     >
       {displayText}
     </span>
   )
-}
+})
 
