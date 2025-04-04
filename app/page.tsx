@@ -25,7 +25,9 @@ export default function Home() {
           <div className="h-full w-full items-start space-y-4 font-serif text-lg">
             <p>Hi, I'm Pranshu.</p>
             <p>
-              I'm a first-year EECS major at UC Berkeley, minoring in Philosophy, originally from the Chicagoland area.
+              I'm a first-year EECS major at UC Berkeley, minoring in Philosophy, originally from Winnetka, IL.
+              I am interested in the use of mathematical modeling and machine learning in real world predictive
+              systems.
             </p>
             <p>
               Currently, I work on red teaming LLMs @ Scale AI, specializing in probing a model's mathematical reasoning
@@ -33,7 +35,7 @@ export default function Home() {
             </p>
             <p>
               In addition to pushing the limits of machine cognition, I also work on sending mankind to space as an engineer
-              at Space Enterprise at Berkeley, where I research the effects of fin flutter on rocket stability.
+              at Space Enterprise at Berkeley, where I simulate the effects of fin flutter on rocket stability.
             </p>
             <p>
               In my spare time, you'll find me at the felt, punting with a VPIP of 70%. Surprisingly, I am a profitable player.
