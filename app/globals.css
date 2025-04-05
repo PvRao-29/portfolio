@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 body {
-  background: white;
-  color: black;
+  background: #0f172a;
+  color: white;
   font-family: "TNR", serif;
 }
 

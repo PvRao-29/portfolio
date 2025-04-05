@@ -67,10 +67,10 @@ function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
   }, [onComplete, loadingPercentage])
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-white text-black overflow-hidden">
+    <div className="fixed inset-0 flex items-center justify-center bg-[#0f172a] text-white overflow-hidden">
       <div className="relative h-40 w-40">
         <div
-          className="absolute h-4 w-4 rounded-full bg-black"
+          className="absolute h-4 w-4 rounded-full bg-[#38bdf8]"
           style={{
             left: `${position.x}%`,
             top: `${position.y}%`,
@@ -142,7 +142,7 @@ function TransitionEffect({ isVisible, onComplete }: { isVisible: boolean; onCom
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center bg-white text-black z-50 transition-opacity duration-500"
+      className="fixed inset-0 flex items-center justify-center bg-[#0f172a] text-white z-50 transition-opacity duration-500"
       style={{ opacity }}
     >
       <div className="text-2xl font-pixel">
@@ -168,6 +168,15 @@ function AgeDisplay() {
   const [isAnimating, setIsAnimating] = useState(false) // Start without animation
   const [key, setKey] = useState(Date.now())
   const initialLoadDoneRef = useRef(true) // Mark as already done
+  const ageTextRef = useRef<HTMLDivElement>(null)
+  const [width, setWidth] = useState<number | null>(null)
+
+  // Measure the width of the text on first render
+  useEffect(() => {
+    if (ageTextRef.current && !width) {
+      setWidth(ageTextRef.current.offsetWidth)
+    }
+  }, [width])
 
   // Set up the interval for live updates immediately
   useEffect(() => {
@@ -192,7 +201,7 @@ function AgeDisplay() {
   }
 
   return (
-    <div>
+    <div ref={ageTextRef} style={width ? { minWidth: `${width}px` } : undefined}>
       <span className="inline-block cursor-pointer font-pixel" onMouseOver={handleMouseOver}>
         <TextScramble
           key={key}
@@ -242,27 +251,27 @@ export default function Home() {
           contentVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
         }`}
       >
-        <div className="sm:space-y-15 h-full w-full max-w-md space-y-6 transition-all duration-[2000ms] sm:max-w-md md:max-w-lg lg:max-w-2xl">
+        <div className="sm:space-y-15 h-full w-full max-w-md space-y-8 transition-all duration-[2000ms] sm:max-w-md md:max-w-lg lg:max-w-2xl">
           <div className="flex w-full flex-wrap gap-x-1">
-            <a href="/" onClick={reloadPage} className="transition-all duration-150">
+            <a href="/" onClick={reloadPage} className="transition-all duration-150 text-white hover:text-[#38bdf8]">
               <TextScramble text="[pranshurao.com]" />
             </a>
           </div>
 
-          <div className="flex h-full w-full flex-col items-start space-y-3">
-            <h1 className="text-2xl">
+          <div className="flex h-full w-full flex-col items-start space-y-5">
+            <h1 className="text-3xl font-medium mb-1">
               <TextScramble text="Pranshu Rao" playOnMount={contentVisible} />
             </h1>
 
-            <div>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:gap-6 text-[#94a3b8]">
               <ClientOnlyAgeDisplay />
+
+              <div className="mt-2 sm:mt-0">
+                <TextScramble text="Currently in: Berkeley, CA" />
+              </div>
             </div>
 
-            <h3 className="text-gray-600 mt-2">
-              <TextScramble text="Currently in: Berkeley, CA" />
-            </h3>
-
-            <div className="h-full w-full items-start space-y-4 font-serif text-lg mt-2">
+            <div className="h-full w-full items-start space-y-4 font-serif text-lg mt-4 text-[#e2e8f0]">
               <p>Hi, I'm Pranshu.</p>
               <p>
                 I'm a first-year EECS major at UC Berkeley, minoring in Philosophy, originally from Winnetka, IL. I am
@@ -287,19 +296,24 @@ export default function Home() {
               </p>
               <p>
                 Always open to interesting conversations—reach me at{" "}
-                <a className="" href="mailto:pranshu_rao@berkeley.edu">
+                <a className="text-white hover:text-[#38bdf8] transition-colors" href="mailto:pranshu_rao@berkeley.edu">
                   pranshu_rao@berkeley.edu
                 </a>
                 !
               </p>
             </div>
 
-            <div className="flex h-full w-full flex-wrap items-end justify-end space-x-1 space-y-10 text-sm">
-              <Link className="transition-all duration-150" href="https://www.linkedin.com/in/pranshurao/">
+            <div className="flex h-full w-full flex-wrap items-end justify-end space-x-4 pt-6 text-sm">
+              <Link
+                className="transition-all duration-150 text-[#94a3b8] hover:text-[#38bdf8]"
+                href="https://www.linkedin.com/in/pranshurao/"
+              >
                 <TextScramble text="[linkedin]" />
               </Link>
-              <p className="inline sm:invisible sm:block sm:pr-0">•</p>
-              <Link className="transition-all duration-150" href="https://github.com/PvRao-29">
+              <Link
+                className="transition-all duration-150 text-[#94a3b8] hover:text-[#38bdf8]"
+                href="https://github.com/PvRao-29"
+              >
                 <TextScramble text="[github]" />
               </Link>
             </div>
