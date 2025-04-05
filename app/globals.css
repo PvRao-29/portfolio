@@ -18,7 +18,7 @@ body {
 
 @font-face {
   font-family: "TNR";
-  src: url("/fonts/et-book-roman-line-figures.CaA40oOf.woff") format("woff2");
+  src: url("/fonts/et-book-roman-line-figures.CaA40oOf.woff") format("woff");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
