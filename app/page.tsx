@@ -110,6 +110,41 @@ function MorphingTransition({
   )
 }
 
+// Smooth reveal text component
+function SmoothRevealText({ text, delay = 50, onComplete }: { text: string; delay?: number; onComplete?: () => void }) {
+  const [displayText, setDisplayText] = useState("")
+  const [isComplete, setIsComplete] = useState(false)
+  const [opacity, setOpacity] = useState(0)
+
+  useEffect(() => {
+    // Fade in the container
+    setOpacity(1)
+
+    // Reveal text character by character
+    let currentIndex = 0
+    const intervalId = setInterval(() => {
+      if (currentIndex <= text.length) {
+        setDisplayText(text.substring(0, currentIndex))
+        currentIndex++
+      } else {
+        clearInterval(intervalId)
+        setIsComplete(true)
+        if (onComplete) {
+          setTimeout(onComplete, 1000)
+        }
+      }
+    }, delay)
+
+    return () => clearInterval(intervalId)
+  }, [text, delay, onComplete])
+
+  return (
+    <div className="transition-opacity duration-500 text-center text-xl" style={{ opacity }}>
+      <span className={`text-[#b45309] ${isComplete ? "animate-pulse" : ""}`}>{displayText}</span>
+    </div>
+  )
+}
+
 // Puzzle component that must be solved to access the main page
 function PuzzleChallenge({ onSolved }: { onSolved: () => void }) {
   const [clues, setClues] = useState<string[]>(["glass blowing"])
@@ -143,7 +178,7 @@ function PuzzleChallenge({ onSolved }: { onSolved: () => void }) {
 
       transitionTimeoutRef.current = setTimeout(() => {
         startTransition()
-      }, 2000)
+      }, 3500) // Longer delay to allow for smooth reveal
     } else {
       // If all clues are already shown, proceed to transition immediately
       startTransition()
@@ -215,9 +250,7 @@ function PuzzleChallenge({ onSolved }: { onSolved: () => void }) {
       } else if (currentClueIndex === allClues.length - 1) {
         // If all clues have been shown, reveal the answer
         setShowAnswer(true)
-        setTimeout(() => {
-          startTransition()
-        }, 2000)
+        // The transition will be started by the SmoothRevealText component's onComplete
       }
     }
   }
@@ -264,7 +297,13 @@ function PuzzleChallenge({ onSolved }: { onSolved: () => void }) {
           )}
 
           {showAnswer ? (
-            <div className="text-[#b45309] text-center text-xl mb-4 animate-pulse">Answer: Things Pranshu enjoys</div>
+            <div className="mb-4">
+              <SmoothRevealText
+                text="Answer: Things Pranshu enjoys"
+                delay={70}
+                onComplete={() => setTimeout(startTransition, 2000)}
+              />
+            </div>
           ) : isCorrect ? (
             <div className="text-[#b45309] text-center text-xl mb-4 animate-pulse">Correct!</div>
           ) : (
@@ -446,7 +485,7 @@ function AgeDisplay() {
       <span className="inline-block cursor-pointer font-pixel" onMouseOver={handleMouseOver}>
         <TextScramble
           key={key}
-          text={`Age: ${displayAge}`}
+          text={`Age: ${displayAge} years old`}
           playOnMount={isAnimating} // Only play animation when isAnimating is true
           speed={1.2}
         />
@@ -513,13 +552,14 @@ export default function Home() {
                     <TextScramble text="Pranshu Rao" playOnMount={true} />
                   </h1>
 
+                  {/* Fix the alignment of "Currently in" and "Age" by removing the pl-5 class and aligning them with the name */}
                   <div className="text-[#78716c] flex items-center">
                     <div className="inline-block w-3 h-3 bg-[#b45309] rounded-full mr-2 animate-pulse"></div>
                     <TextScramble text="Currently in: Berkeley, CA" />
                   </div>
 
-                  {/* Age display with improved styling */}
-                  <div className="text-[#78716c] pl-5">
+                  {/* Age display with improved styling and alignment fixed */}
+                  <div className="text-[#78716c]">
                     <ClientOnlyAgeDisplay />
                   </div>
                 </div>
@@ -529,12 +569,16 @@ export default function Home() {
                   <Link
                     className="transition-all duration-150 text-[#78716c] hover:text-[#b45309]"
                     href="https://www.linkedin.com/in/pranshurao/"
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
                     <TextScramble text="[linkedin]" />
                   </Link>
                   <Link
                     className="transition-all duration-150 text-[#78716c] hover:text-[#b45309]"
                     href="https://github.com/PvRao-29"
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
                     <TextScramble text="[github]" />
                   </Link>
@@ -555,22 +599,47 @@ export default function Home() {
 
                 {/* Work section */}
                 <section>
+                  {/* Add links to the company names with the same hover effect as the email */}
                   <p className="mb-5">
-                    Currently, I work as an engineer at Space Enterprise at Berkeley, where I simulate the effects of
-                    fin flutter on rocket stability.
+                    Currently, I work as an engineer at{" "}
+                    <a
+                      href="https://www.berkeleyse.org/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#2d2d2d] hover:text-[#b45309] transition-colors"
+                    >
+                      Space Enterprise at Berkeley
+                    </a>
+                    , where I simulate the effects of fin flutter on rocket stability.
                   </p>
                   <p className="mb-5">
                     In addition to sending mankind to space, I also work on pushing the limits of machine cognition.
-                    This summer I will be forecasting enterprise decision making at o9 solutions as a part of their
-                    engineering team.
+                    This summer I will be forecasting enterprise decision making at{" "}
+                    <a
+                      href="https://o9solutions.com/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#2d2d2d] hover:text-[#b45309] transition-colors"
+                    >
+                      o9 solutions
+                    </a>{" "}
+                    as a part of their engineering team.
                   </p>
                 </section>
 
                 {/* Personal interests section */}
                 <section>
                   <p className="mb-5">
-                    In my spare time, you'll find me at the felt, punting with a VPIP of 70%. Surprisingly, I am a
-                    profitable player.
+                    In my spare time, you'll find me at the{" "}
+                    <a
+                      href="https://poker.studentorg.berkeley.edu/people.html"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#2d2d2d] hover:text-[#b45309] transition-colors"
+                    >
+                      felt
+                    </a>
+                    , punting with a VPIP of 70%. Surprisingly, I am a profitable player.
                   </p>
                   <p className="mb-5">
                     I thrive on creative problem-solving—whether it's quantifying uncertainty at the poker table or
