@@ -487,83 +487,115 @@ export default function Home() {
 
       {!isLoading && !showPuzzle && contentVisible && (
         <main
-          className={`flex h-full min-h-screen w-full flex-col items-center justify-start p-8 pt-16 text-sm transition-all duration-1000 sm:p-16 sm:pt-16 ${
+          className={`flex h-full min-h-screen w-full flex-col items-center justify-start p-4 pt-8 text-sm transition-all duration-1000 sm:p-8 sm:pt-12 ${
             contentVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
           }`}
         >
-          <div className="sm:space-y-15 h-full w-full max-w-md space-y-8 transition-all duration-[2000ms] sm:max-w-md md:max-w-lg lg:max-w-2xl">
-            <div className="flex w-full flex-wrap gap-x-1">
-              <a
-                href="/"
-                onClick={reloadPage}
-                className="transition-all duration-150 text-[#2d2d2d] hover:text-[#b45309]"
-              >
-                <TextScramble text="[pranshurao.com]" />
-              </a>
-            </div>
+          <div className="w-full max-w-5xl transition-all duration-[2000ms]">
+            {/* Main content grid with redesigned layout */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+              {/* Left column - Bio header with improved spacing */}
+              <div className="md:col-span-1 space-y-6">
+                <div className="space-y-4">
+                  {/* Site link with subtle design */}
+                  <div className="mb-2">
+                    <a
+                      href="/"
+                      onClick={reloadPage}
+                      className="transition-all duration-150 text-[#78716c] hover:text-[#b45309] text-sm inline-block"
+                    >
+                      <TextScramble text="[pranshurao.com]" />
+                    </a>
+                  </div>
 
-            <div className="flex h-full w-full flex-col items-start space-y-5">
-              <h1 className="text-3xl font-medium mb-1">
-                <TextScramble text="Pranshu Rao" playOnMount={true} />
-              </h1>
+                  <h1 className="text-3xl font-medium">
+                    <TextScramble text="Pranshu Rao" playOnMount={true} />
+                  </h1>
 
-              <div className="flex flex-col sm:flex-row sm:items-center sm:gap-6 text-[#78716c]">
-                <ClientOnlyAgeDisplay />
+                  <div className="text-[#78716c] flex items-center">
+                    <div className="inline-block w-3 h-3 bg-[#b45309] rounded-full mr-2 animate-pulse"></div>
+                    <TextScramble text="Currently in: Berkeley, CA" />
+                  </div>
 
-                <div className="mt-2 sm:mt-0">
-                  <TextScramble text="Currently in: Berkeley, CA" />
+                  {/* Age display with improved styling */}
+                  <div className="text-[#78716c] pl-5">
+                    <ClientOnlyAgeDisplay />
+                  </div>
+                </div>
+
+                {/* Social links with improved styling */}
+                <div className="flex flex-wrap gap-5 pt-2">
+                  <Link
+                    className="transition-all duration-150 text-[#78716c] hover:text-[#b45309]"
+                    href="https://www.linkedin.com/in/pranshurao/"
+                  >
+                    <TextScramble text="[linkedin]" />
+                  </Link>
+                  <Link
+                    className="transition-all duration-150 text-[#78716c] hover:text-[#b45309]"
+                    href="https://github.com/PvRao-29"
+                  >
+                    <TextScramble text="[github]" />
+                  </Link>
                 </div>
               </div>
 
-              <div className="h-full w-full items-start space-y-4 font-serif text-lg mt-4 text-[#2d2d2d]">
-                <p>Hi, I'm Pranshu.</p>
-                <p>
-                  I'm a first-year EECS major at UC Berkeley, minoring in Philosophy, originally from Winnetka, IL. I am
-                  interested in the use of mathematical modeling and machine learning in real world predictive systems.
-                </p>
-                <p>
-                  Currently, I work as an engineer at Space Enterprise at Berkeley, where I simulate the effects of fin
-                  flutter on rocket stability.
-                </p>
-                <p>
-                  In addition to sending mankind to space, I also work on pushing the limits of machine cognition. This
-                  summer I will be forecasting enterprise decision making at o9 solutions as a part of their engineering
-                  team.
-                </p>
-                <p>
-                  In my spare time, you'll find me at the felt, punting with a VPIP of 70%. Surprisingly, I am a
-                  profitable player.
-                </p>
-                <p>
-                  I thrive on creative problem-solving—whether it's quantifying uncertainty at the poker table or
-                  engineering stability in the chaos of hypersonic flight.
-                </p>
-                <p>
-                  Always open to interesting conversations—reach me at{" "}
-                  <a
-                    className="text-[#2d2d2d] hover:text-[#b45309] transition-colors"
-                    href="mailto:pranshu_rao@berkeley.edu"
-                  >
-                    pranshu_rao@berkeley.edu
-                  </a>
-                  !
-                </p>
-              </div>
+              {/* Right column - Bio content with reduced spacing */}
+              <div className="md:col-span-2 font-serif text-lg text-[#2d2d2d] border-l-2 border-[#b45309]/20 hover:border-[#b45309] transition-colors duration-300 pl-5 md:pl-6 py-2 space-y-4">
+                {/* Introduction section */}
+                <section>
+                  <p className="mb-3">Hi, I'm Pranshu.</p>
+                  <p className="mb-3">
+                    I'm a first-year EECS major at UC Berkeley, minoring in Philosophy, originally from Winnetka, IL. I
+                    am interested in the use of mathematical modeling and machine learning in real world predictive
+                    systems.
+                  </p>
+                </section>
 
-              <div className="flex h-full w-full flex-wrap items-end justify-end space-x-4 pt-6 text-sm">
-                <Link
-                  className="transition-all duration-150 text-[#78716c] hover:text-[#b45309]"
-                  href="https://www.linkedin.com/in/pranshurao/"
-                >
-                  <TextScramble text="[linkedin]" />
-                </Link>
-                <Link
-                  className="transition-all duration-150 text-[#78716c] hover:text-[#b45309]"
-                  href="https://github.com/PvRao-29"
-                >
-                  <TextScramble text="[github]" />
-                </Link>
+                {/* Work section */}
+                <section>
+                  <p className="mb-3">
+                    Currently, I work as an engineer at Space Enterprise at Berkeley, where I simulate the effects of
+                    fin flutter on rocket stability.
+                  </p>
+                  <p className="mb-3">
+                    In addition to sending mankind to space, I also work on pushing the limits of machine cognition.
+                    This summer I will be forecasting enterprise decision making at o9 solutions as a part of their
+                    engineering team.
+                  </p>
+                </section>
+
+                {/* Personal interests section */}
+                <section>
+                  <p className="mb-3">
+                    In my spare time, you'll find me at the felt, punting with a VPIP of 70%. Surprisingly, I am a
+                    profitable player.
+                  </p>
+                  <p className="mb-3">
+                    I thrive on creative problem-solving—whether it's quantifying uncertainty at the poker table or
+                    engineering stability in the chaos of hypersonic flight.
+                  </p>
+                </section>
+
+                {/* Contact section without highlight box */}
+                <section>
+                  <p>
+                    Always open to interesting conversations—reach me at{" "}
+                    <a
+                      className="text-[#2d2d2d] hover:text-[#b45309] transition-colors"
+                      href="mailto:pranshu_rao@berkeley.edu"
+                    >
+                      pranshu_rao@berkeley.edu
+                    </a>
+                    !
+                  </p>
+                </section>
               </div>
+            </div>
+
+            {/* Footer with subtle design */}
+            <div className="mt-12 pt-3 border-t border-[#2d2d2d]/10 text-center text-[#78716c] text-sm">
+              <TextScramble text="© 2025 Pranshu Rao" />
             </div>
           </div>
         </main>
