@@ -487,13 +487,14 @@ export default function Home() {
 
       {!isLoading && !showPuzzle && contentVisible && (
         <main
-          className={`flex h-full min-h-screen w-full flex-col items-center justify-start p-4 pt-8 text-sm transition-all duration-1000 sm:p-8 sm:pt-12 ${
+          className={`flex h-screen w-full flex-col justify-between transition-all duration-1000 ${
             contentVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
           }`}
         >
-          <div className="w-full max-w-5xl transition-all duration-[2000ms]">
+          {/* Content container with evenly distributed spacing */}
+          <div className="w-full max-w-5xl mx-auto px-4 pt-12 pb-8 sm:px-8 sm:pt-16 flex-grow flex items-center transition-all duration-[2000ms]">
             {/* Main content grid with redesigned layout */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 w-full">
               {/* Left column - Bio header with improved spacing */}
               <div className="md:col-span-1 space-y-6">
                 <div className="space-y-4">
@@ -541,11 +542,11 @@ export default function Home() {
               </div>
 
               {/* Right column - Bio content with reduced spacing */}
-              <div className="md:col-span-2 font-serif text-lg text-[#2d2d2d] border-l-2 border-[#b45309]/20 hover:border-[#b45309] transition-colors duration-300 pl-5 md:pl-6 py-2 space-y-4">
+              <div className="md:col-span-2 font-serif text-lg text-[#2d2d2d] border-l-2 border-[#b45309]/20 hover:border-[#b45309] transition-colors duration-300 pl-5 md:pl-6 py-2 space-y-6">
                 {/* Introduction section */}
                 <section>
-                  <p className="mb-3">Hi, I'm Pranshu.</p>
-                  <p className="mb-3">
+                  <p className="mb-5">Hi, I'm Pranshu.</p>
+                  <p className="mb-5">
                     I'm a first-year EECS major at UC Berkeley, minoring in Philosophy, originally from Winnetka, IL. I
                     am interested in the use of mathematical modeling and machine learning in real world predictive
                     systems.
@@ -554,11 +555,11 @@ export default function Home() {
 
                 {/* Work section */}
                 <section>
-                  <p className="mb-3">
+                  <p className="mb-5">
                     Currently, I work as an engineer at Space Enterprise at Berkeley, where I simulate the effects of
                     fin flutter on rocket stability.
                   </p>
-                  <p className="mb-3">
+                  <p className="mb-5">
                     In addition to sending mankind to space, I also work on pushing the limits of machine cognition.
                     This summer I will be forecasting enterprise decision making at o9 solutions as a part of their
                     engineering team.
@@ -567,11 +568,11 @@ export default function Home() {
 
                 {/* Personal interests section */}
                 <section>
-                  <p className="mb-3">
+                  <p className="mb-5">
                     In my spare time, you'll find me at the felt, punting with a VPIP of 70%. Surprisingly, I am a
                     profitable player.
                   </p>
-                  <p className="mb-3">
+                  <p className="mb-5">
                     I thrive on creative problem-solving—whether it's quantifying uncertainty at the poker table or
                     engineering stability in the chaos of hypersonic flight.
                   </p>
@@ -592,12 +593,14 @@ export default function Home() {
                 </section>
               </div>
             </div>
+          </div>
 
-            {/* Footer with subtle design */}
-            <div className="mt-12 pt-3 border-t border-[#2d2d2d]/10 text-center text-[#78716c] text-sm">
+          {/* Footer positioned at the bottom */}
+          <footer className="w-full border-t border-[#2d2d2d]/10 py-4 mt-auto">
+            <div className="max-w-5xl mx-auto px-4 sm:px-8 text-center text-[#78716c] text-sm">
               <TextScramble text="© 2025 Pranshu Rao" />
             </div>
-          </div>
+          </footer>
         </main>
       )}
     </>
