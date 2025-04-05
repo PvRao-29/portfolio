@@ -156,29 +156,51 @@ function PuzzleChallenge({ onSolved }: { onSolved: () => void }) {
   const [fadeOut, setFadeOut] = useState(false)
   const [showMorphingTransition, setShowMorphingTransition] = useState(false)
   const [showingAllClues, setShowingAllClues] = useState(false)
+  const [revealingClues, setRevealingClues] = useState(false)
   const transitionTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const clueRevealTimeoutsRef = useRef<NodeJS.Timeout[]>([])
 
   const allClues = ["glass blowing", "robots", "reading", "poker", "sleeping in"]
 
   // Allowed keywords for the answer check
   const allowedKeywords = ["thing", "things", "hobby", "hobbies", "like", "likes", "enjoy", "enjoys"]
 
-  // Function to reveal all remaining clues
+  // Function to reveal all remaining clues one by one
   const revealAllClues = () => {
-    // Only add clues that aren't already shown
+    // Only proceed if we're not already revealing clues
+    if (revealingClues) return
+
+    // Get clues that aren't already shown
     const remainingClues = allClues.filter((clue) => !clues.includes(clue))
+
     if (remainingClues.length > 0) {
-      setClues([...clues, ...remainingClues])
-      setShowingAllClues(true)
+      setRevealingClues(true)
 
-      // Set a timeout to start transition after showing all clues
-      if (transitionTimeoutRef.current) {
-        clearTimeout(transitionTimeoutRef.current)
-      }
+      // Reveal each clue one by one with a delay
+      remainingClues.forEach((clue, index) => {
+        const timeout = setTimeout(
+          () => {
+            setClues((prev) => [...prev, clue])
 
-      transitionTimeoutRef.current = setTimeout(() => {
-        startTransition()
-      }, 3500) // Longer delay to allow for smooth reveal
+            // If this is the last clue, set a timeout to start the transition
+            if (index === remainingClues.length - 1) {
+              setShowingAllClues(true)
+
+              if (transitionTimeoutRef.current) {
+                clearTimeout(transitionTimeoutRef.current)
+              }
+
+              transitionTimeoutRef.current = setTimeout(() => {
+                startTransition()
+                setRevealingClues(false)
+              }, 1500) // Wait a bit after the last clue before transitioning
+            }
+          },
+          800 * (index + 1),
+        ) // Stagger each clue reveal by 800ms
+
+        clueRevealTimeoutsRef.current.push(timeout)
+      })
     } else {
       // If all clues are already shown, proceed to transition immediately
       startTransition()
@@ -211,6 +233,9 @@ function PuzzleChallenge({ onSolved }: { onSolved: () => void }) {
       if (transitionTimeoutRef.current) {
         clearTimeout(transitionTimeoutRef.current)
       }
+
+      // Clear all clue reveal timeouts
+      clueRevealTimeoutsRef.current.forEach((timeout) => clearTimeout(timeout))
     }
   }, [])
 
@@ -275,10 +300,12 @@ function PuzzleChallenge({ onSolved }: { onSolved: () => void }) {
             <div className="space-y-3">
               {clues.map((clue, index) => (
                 <div
-                  key={index}
-                  className={`text-xl text-center py-2 border-b border-[#b45309]/20 ${
-                    index === currentClueIndex && !isCorrect ? "text-[#b45309]" : "text-[#2d2d2d]"
-                  } ${showingAllClues && !clues.includes(allClues[index]) ? "text-[#b45309]" : ""}`}
+                  key={clue}
+                  className={`text-xl text-center py-2 border-b border-[#b45309]/20 
+                    ${index === currentClueIndex && !isCorrect ? "text-[#b45309]" : "text-[#2d2d2d]"}
+                    ${showingAllClues && !allClues.includes(clue) ? "text-[#b45309]" : ""}
+                    ${index >= currentClueIndex + 1 || (isCorrect && index > clues.indexOf(allClues[0])) ? "animate-fadeInDown" : ""}
+                  `}
                 >
                   {clue}
                 </div>
@@ -441,26 +468,15 @@ function calculateAge() {
   return ageInYears.toFixed(8)
 }
 
-// Age display component
+// Age display component with monospace font approach
 function AgeDisplay() {
-  // Initialize with the actual age instead of "0.00000000"
+  // Initialize with the actual age
   const [displayAge, setDisplayAge] = useState(calculateAge())
-  const [isAnimating, setIsAnimating] = useState(false) // Start without animation
+  const [isAnimating, setIsAnimating] = useState(false)
   const [key, setKey] = useState(Date.now())
-  const initialLoadDoneRef = useRef(true) // Mark as already done
-  const ageTextRef = useRef<HTMLDivElement>(null)
-  const [width, setWidth] = useState<number | null>(null)
 
-  // Measure the width of the text on first render
+  // Set up the interval for live updates
   useEffect(() => {
-    if (ageTextRef.current && !width) {
-      setWidth(ageTextRef.current.offsetWidth)
-    }
-  }, [width])
-
-  // Set up the interval for live updates immediately
-  useEffect(() => {
-    // Only set up live updates if not animating
     if (!isAnimating) {
       const interval = setInterval(() => {
         setDisplayAge(calculateAge())
@@ -474,22 +490,34 @@ function AgeDisplay() {
     setIsAnimating(true)
     setKey(Date.now())
 
-    // Set a timeout to resume live updates after animation
     setTimeout(() => {
       setIsAnimating(false)
-    }, 3000) // Animation takes about 3 seconds
+    }, 3000)
   }
 
+  // Create the full text with non-breaking space to keep it on one line
+  const fullText = `Age: ${displayAge}\u00A0years\u00A0old`
+
   return (
-    <div ref={ageTextRef} style={width ? { minWidth: `${width}px` } : undefined}>
-      <span className="inline-block cursor-pointer font-pixel" onMouseOver={handleMouseOver}>
-        <TextScramble
-          key={key}
-          text={`Age: ${displayAge} years old`}
-          playOnMount={isAnimating} // Only play animation when isAnimating is true
-          speed={1.2}
-        />
-      </span>
+    <div className="text-[#78716c]">
+      {/* Use a pre-formatted, fixed-width container with monospace styling */}
+      <div
+        className="inline-block whitespace-nowrap"
+        style={{
+          fontFamily: "'Pixel', monospace",
+          letterSpacing: "normal",
+          // Force minimum width to prevent shrinking
+          minWidth: "240px",
+        }}
+      >
+        <span
+          className="cursor-pointer"
+          onMouseOver={handleMouseOver}
+          style={{ display: "inline-block", width: "100%" }}
+        >
+          <TextScramble key={key} text={fullText} playOnMount={isAnimating} speed={1.2} />
+        </span>
+      </div>
     </div>
   )
 }
