@@ -22,11 +22,36 @@ function PuzzleChallenge({ onSolved }: { onSolved: () => void }) {
   const [isCorrect, setIsCorrect] = useState(false)
   const [fadeOut, setFadeOut] = useState(false)
   const [shuffleOut, setShuffleOut] = useState(false)
+  const [showingAllClues, setShowingAllClues] = useState(false)
 
   const allClues = ["glass blowing", "robots", "reading", "poker", "sleeping in"]
 
   // Allowed keywords for the answer check
   const allowedKeywords = ["thing", "things", "hobby", "hobbies", "like", "likes", "enjoy", "enjoys"]
+
+  // Function to reveal all remaining clues
+  const revealAllClues = () => {
+    // Only add clues that aren't already shown
+    const remainingClues = allClues.filter((clue) => !clues.includes(clue))
+    if (remainingClues.length > 0) {
+      setClues([...clues, ...remainingClues])
+      setShowingAllClues(true)
+    } else {
+      // If all clues are already shown, proceed to transition
+      startTransition()
+    }
+  }
+
+  // Function to start the transition animation
+  const startTransition = () => {
+    setShuffleOut(true)
+    setTimeout(() => {
+      setFadeOut(true)
+      setTimeout(() => {
+        onSolved()
+      }, 800)
+    }, 1500)
+  }
 
   const handleSubmit = () => {
     if (!userInput.trim()) return
@@ -46,14 +71,15 @@ function PuzzleChallenge({ onSolved }: { onSolved: () => void }) {
 
     if (hasPranshu && hasKeyword) {
       setIsCorrect(true)
+      // First reveal all remaining clues
       setTimeout(() => {
-        setShuffleOut(true) // Start shuffle animation
+        revealAllClues()
+        // Wait a moment to let user see all clues before transition
         setTimeout(() => {
-          setFadeOut(true) // Then start fade out
-          setTimeout(() => {
-            onSolved()
-          }, 800)
-        }, 1000)
+          if (!showingAllClues) {
+            startTransition()
+          }
+        }, 2500)
       }, 1200)
     } else {
       // Clear the input field for the next guess
@@ -68,13 +94,7 @@ function PuzzleChallenge({ onSolved }: { onSolved: () => void }) {
         // If all clues have been shown, reveal the answer
         setShowAnswer(true)
         setTimeout(() => {
-          setShuffleOut(true) // Start shuffle animation
-          setTimeout(() => {
-            setFadeOut(true) // Then start fade out
-            setTimeout(() => {
-              onSolved()
-            }, 800)
-          }, 1000)
+          startTransition()
         }, 2000)
       }
     }
@@ -88,7 +108,7 @@ function PuzzleChallenge({ onSolved }: { onSolved: () => void }) {
 
   return (
     <div
-      className={`fixed inset-0 flex items-center justify-center bg-[#0f172a] text-white z-50 transition-opacity duration-800 ${fadeOut ? "opacity-0" : "opacity-100"}`}
+      className={`fixed inset-0 flex items-center justify-center bg-[#f5f2e9] text-[#2d2d2d] z-50 transition-opacity duration-800 ${fadeOut ? "opacity-0" : "opacity-100"}`}
     >
       <div className="max-w-md w-full px-8 font-pixel">
         <div className="mb-10 space-y-1">
@@ -97,10 +117,10 @@ function PuzzleChallenge({ onSolved }: { onSolved: () => void }) {
               text="Solve the puzzle by figuring out the common category connecting these clues."
               playOnMount={true}
               speed={1.5}
-              className="text-lg tracking-wide text-center mb-6 text-[#e2e8f0]"
+              className="text-lg tracking-wide text-center mb-6 text-[#2d2d2d]"
             />
           ) : (
-            <p className="text-lg tracking-wide text-center mb-6 text-[#e2e8f0]">
+            <p className="text-lg tracking-wide text-center mb-6 text-[#2d2d2d]">
               Solve the puzzle by figuring out the common category connecting these clues.
             </p>
           )}
@@ -109,9 +129,9 @@ function PuzzleChallenge({ onSolved }: { onSolved: () => void }) {
             {clues.map((clue, index) => (
               <div
                 key={index}
-                className={`text-xl text-center py-2 border-b border-[#38bdf8]/20 ${
-                  index === currentClueIndex ? "text-[#38bdf8]" : "text-[#e2e8f0]"
-                }`}
+                className={`text-xl text-center py-2 border-b border-[#b45309]/20 ${
+                  index === currentClueIndex && !isCorrect ? "text-[#b45309]" : "text-[#2d2d2d]"
+                } ${showingAllClues && !clues.includes(allClues[index]) ? "text-[#b45309]" : ""}`}
               >
                 {shuffleOut ? <TextScramble text={clue} playOnMount={true} speed={1.5} /> : clue}
               </div>
@@ -119,18 +139,18 @@ function PuzzleChallenge({ onSolved }: { onSolved: () => void }) {
           </div>
         </div>
 
-        {previousGuesses.length > 0 && !shuffleOut && (
+        {previousGuesses.length > 0 && !shuffleOut && !isCorrect && (
           <div className="mb-8 flex flex-wrap justify-center gap-2">
             {previousGuesses.map((guess, index) => (
-              <div key={index} className="line-through text-gray-500 px-2 py-1 bg-[#1e293b]/50 rounded-md text-sm">
-                {guess}
+              <div key={index} className="line-through text-gray-500 px-2 py-1 bg-[#e7e5de] rounded-md text-sm">
+                {shuffleOut ? <TextScramble text={guess} playOnMount={true} speed={1.5} /> : guess}
               </div>
             ))}
           </div>
         )}
 
         {showAnswer ? (
-          <div className="text-[#38bdf8] text-center text-xl mb-4 animate-pulse">
+          <div className="text-[#b45309] text-center text-xl mb-4 animate-pulse">
             {shuffleOut ? (
               <TextScramble text="Answer: Things Pranshu enjoys" playOnMount={true} speed={1.5} />
             ) : (
@@ -138,7 +158,7 @@ function PuzzleChallenge({ onSolved }: { onSolved: () => void }) {
             )}
           </div>
         ) : isCorrect ? (
-          <div className="text-[#38bdf8] text-center text-xl mb-4 animate-pulse">
+          <div className="text-[#b45309] text-center text-xl mb-4 animate-pulse">
             {shuffleOut ? <TextScramble text="Correct!" playOnMount={true} speed={1.5} /> : "Correct!"}
           </div>
         ) : (
@@ -149,13 +169,13 @@ function PuzzleChallenge({ onSolved }: { onSolved: () => void }) {
               onChange={(e) => setUserInput(e.target.value)}
               onKeyUp={handleKeyUp}
               placeholder="Enter your answer here"
-              className="w-full px-4 py-3 rounded-md bg-[#1e293b] border border-[#38bdf8]/30 focus:outline-none focus:border-[#38bdf8] focus:ring-1 focus:ring-[#38bdf8] transition-all text-center font-pixel"
+              className="w-full px-4 py-3 rounded-md bg-[#e7e5de] border border-[#b45309]/30 focus:outline-none focus:border-[#b45309] focus:ring-1 focus:ring-[#b45309] transition-all text-center font-pixel text-[#2d2d2d]"
               autoFocus
               disabled={shuffleOut}
             />
             <button
               onClick={handleSubmit}
-              className="w-full px-4 py-3 bg-[#1e293b] text-[#38bdf8] rounded-md hover:bg-[#38bdf8]/10 transition-colors border border-[#38bdf8]/30"
+              className="w-full px-4 py-3 bg-[#e7e5de] text-[#b45309] rounded-md hover:bg-[#b45309]/10 transition-colors border border-[#b45309]/30"
               disabled={shuffleOut}
             >
               {shuffleOut ? <TextScramble text="Submit" playOnMount={true} speed={1.5} /> : "Submit"}
@@ -170,15 +190,17 @@ function PuzzleChallenge({ onSolved }: { onSolved: () => void }) {
 // Loading animation component
 function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
   const [loadingPercentage, setLoadingPercentage] = useState(0)
-  const [position, setPosition] = useState({ x: 50, y: 50 })
   const [isTransitioning, setIsTransitioning] = useState(false)
-  const animationRef = useRef<number | null>(null)
+  const [useScramble, setUseScramble] = useState(false)
   const startTimeRef = useRef<number | null>(null)
   const duration = 3000 // 3 seconds for the loading animation
 
+  // Create a reference for the canvas element
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+
   useEffect(() => {
-    // Function to animate the dot
-    const animateDot = (timestamp: number) => {
+    // Function to handle loading progress
+    const updateLoading = (timestamp: number) => {
       if (!startTimeRef.current) startTimeRef.current = timestamp
 
       const elapsed = timestamp - startTimeRef.current
@@ -186,59 +208,80 @@ function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
 
       // Update loading percentage
       const newPercentage = Math.floor(progress * 100)
-      if (newPercentage !== loadingPercentage) {
-        setLoadingPercentage(newPercentage)
-      }
-
-      // Create a circular motion path
-      const angle = progress * Math.PI * 4 // 2 full circles
-      const radius = 30 * (1 - progress) // Radius decreases as we progress
-      const centerX = 50
-      const centerY = 50
-
-      setPosition({
-        x: centerX + radius * Math.cos(angle),
-        y: centerY + radius * Math.sin(angle),
-      })
+      setLoadingPercentage(newPercentage)
 
       if (progress < 1) {
-        animationRef.current = requestAnimationFrame(animateDot)
+        requestAnimationFrame(updateLoading)
       } else {
-        // Start transition when animation completes
+        // Start transition when loading completes
         setIsTransitioning(true)
+        setUseScramble(true) // Enable text scramble for the transition
         setTimeout(() => {
           onComplete()
-        }, 800) // Shorter delay for smoother transition
+        }, 1200) // Delay to allow for scramble animation
       }
     }
 
-    animationRef.current = requestAnimationFrame(animateDot)
+    requestAnimationFrame(updateLoading)
+  }, [onComplete])
 
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current)
-      }
-    }
-  }, [onComplete, loadingPercentage])
+  // Canvas animation effect
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+
+    const ctx = canvas.getContext("2d")
+    if (!ctx) return
+
+    // Set canvas dimensions
+    canvas.width = canvas.offsetWidth * window.devicePixelRatio
+    canvas.height = canvas.offsetHeight * window.devicePixelRatio
+
+    // Scale context to match device pixel ratio
+    ctx.scale(window.devicePixelRatio, window.devicePixelRatio)
+
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+    // Draw a minimal, elegant loading animation
+    const centerX = canvas.offsetWidth / 2
+    const centerY = canvas.offsetHeight / 2
+    const radius = Math.min(centerX, centerY) * 0.6
+
+    // Draw progress arc
+    const startAngle = -Math.PI / 2
+    const endAngle = startAngle + (2 * Math.PI * loadingPercentage) / 100
+
+    ctx.beginPath()
+    ctx.arc(centerX, centerY, radius, startAngle, endAngle)
+    ctx.strokeStyle = "#b45309"
+    ctx.lineWidth = 2
+    ctx.stroke()
+
+    // Draw subtle background circle
+    ctx.beginPath()
+    ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI)
+    ctx.strokeStyle = "#e7e5de"
+    ctx.lineWidth = 1
+    ctx.stroke()
+  }, [loadingPercentage])
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-[#0f172a] text-white overflow-hidden">
-      <div className="relative h-40 w-40">
-        <div
-          className="absolute h-4 w-4 rounded-full bg-[#38bdf8]"
-          style={{
-            left: `${position.x}%`,
-            top: `${position.y}%`,
-            transform: "translate(-50%, -50%)",
-          }}
-        />
-        <div
-          className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center font-pixel transition-all duration-500 ${
-            isTransitioning ? "opacity-0 scale-110" : "opacity-100"
-          }`}
-        >
+    <div className="fixed inset-0 flex flex-col items-center justify-center bg-[#f5f2e9] text-[#2d2d2d]">
+      <div className="relative w-40 h-40 mb-8">
+        <canvas ref={canvasRef} className="w-full h-full" />
+      </div>
+
+      <div
+        className={`text-center font-pixel transition-all duration-500 ${
+          isTransitioning && !useScramble ? "opacity-0 scale-110" : "opacity-100"
+        }`}
+      >
+        {useScramble ? (
+          <TextScramble text={`loading: ${loadingPercentage}%`} playOnMount={true} speed={1.2} />
+        ) : (
           <div className="whitespace-nowrap">loading: {loadingPercentage}%</div>
-        </div>
+        )}
       </div>
     </div>
   )
@@ -297,7 +340,7 @@ function TransitionEffect({ isVisible, onComplete }: { isVisible: boolean; onCom
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center bg-[#0f172a] text-white z-50 transition-opacity duration-500"
+      className="fixed inset-0 flex items-center justify-center bg-[#f5f2e9] text-[#2d2d2d] z-50 transition-opacity duration-500"
       style={{ opacity }}
     >
       <div className="text-2xl font-pixel">
@@ -420,7 +463,11 @@ export default function Home() {
         >
           <div className="sm:space-y-15 h-full w-full max-w-md space-y-8 transition-all duration-[2000ms] sm:max-w-md md:max-w-lg lg:max-w-2xl">
             <div className="flex w-full flex-wrap gap-x-1">
-              <a href="/" onClick={reloadPage} className="transition-all duration-150 text-white hover:text-[#38bdf8]">
+              <a
+                href="/"
+                onClick={reloadPage}
+                className="transition-all duration-150 text-[#2d2d2d] hover:text-[#b45309]"
+              >
                 <TextScramble text="[pranshurao.com]" />
               </a>
             </div>
@@ -430,7 +477,7 @@ export default function Home() {
                 <TextScramble text="Pranshu Rao" playOnMount={true} />
               </h1>
 
-              <div className="flex flex-col sm:flex-row sm:items-center sm:gap-6 text-[#94a3b8]">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:gap-6 text-[#78716c]">
                 <ClientOnlyAgeDisplay />
 
                 <div className="mt-2 sm:mt-0">
@@ -438,7 +485,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="h-full w-full items-start space-y-4 font-serif text-lg mt-4 text-[#e2e8f0]">
+              <div className="h-full w-full items-start space-y-4 font-serif text-lg mt-4 text-[#2d2d2d]">
                 <p>Hi, I'm Pranshu.</p>
                 <p>
                   I'm a first-year EECS major at UC Berkeley, minoring in Philosophy, originally from Winnetka, IL. I am
@@ -464,7 +511,7 @@ export default function Home() {
                 <p>
                   Always open to interesting conversations—reach me at{" "}
                   <a
-                    className="text-white hover:text-[#38bdf8] transition-colors"
+                    className="text-[#2d2d2d] hover:text-[#b45309] transition-colors"
                     href="mailto:pranshu_rao@berkeley.edu"
                   >
                     pranshu_rao@berkeley.edu
@@ -475,13 +522,13 @@ export default function Home() {
 
               <div className="flex h-full w-full flex-wrap items-end justify-end space-x-4 pt-6 text-sm">
                 <Link
-                  className="transition-all duration-150 text-[#94a3b8] hover:text-[#38bdf8]"
+                  className="transition-all duration-150 text-[#78716c] hover:text-[#b45309]"
                   href="https://www.linkedin.com/in/pranshurao/"
                 >
                   <TextScramble text="[linkedin]" />
                 </Link>
                 <Link
-                  className="transition-all duration-150 text-[#94a3b8] hover:text-[#38bdf8]"
+                  className="transition-all duration-150 text-[#78716c] hover:text-[#b45309]"
                   href="https://github.com/PvRao-29"
                 >
                   <TextScramble text="[github]" />
