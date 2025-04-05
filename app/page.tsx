@@ -12,6 +12,104 @@ const ClientOnlyAgeDisplay = dynamic(() => Promise.resolve(AgeDisplay), {
   ssr: false, // This prevents server-side rendering
 })
 
+// Glitch transition component
+function GlitchTransition({
+  isVisible,
+  onComplete,
+  text,
+  duration = 2000,
+}: {
+  isVisible: boolean
+  onComplete: () => void
+  text: string
+  duration?: number
+}) {
+  const [opacity, setOpacity] = useState(1)
+
+  useEffect(() => {
+    if (isVisible) {
+      // Initial state
+      setOpacity(1)
+
+      // Fade out after duration
+      setTimeout(() => {
+        setOpacity(0)
+        setTimeout(() => onComplete(), 400)
+      }, duration)
+    }
+  }, [isVisible, duration, onComplete])
+
+  if (!isVisible) return null
+
+  return (
+    <div
+      className="fixed inset-0 flex items-center justify-center bg-[#f5f2e9] text-[#2d2d2d] z-50 transition-opacity duration-400"
+      style={{ opacity }}
+    >
+      <div className="text-2xl font-pixel">
+        <TextScramble text={text} playOnMount={true} speed={1.2} />
+      </div>
+    </div>
+  )
+}
+
+// Morphing transition component
+function MorphingTransition({
+  isVisible,
+  onComplete,
+}: {
+  isVisible: boolean
+  onComplete: () => void
+}) {
+  const [currentText, setCurrentText] = useState("")
+  const [opacity, setOpacity] = useState(1)
+  const [stage, setStage] = useState(0)
+  const [key, setKey] = useState(0)
+
+  // Sequence of texts to morph through
+  const morphSequence = ["Things Pranshu enjoys", "Pranshu enjoys things", "Pranshu Rao"]
+
+  useEffect(() => {
+    if (!isVisible) return
+
+    // Start the morphing sequence
+    setStage(1)
+    setCurrentText(morphSequence[0])
+
+    // Create a sequence of text changes
+    morphSequence.forEach((text, index) => {
+      if (index === 0) return // Skip the first one as we've already set it
+
+      setTimeout(() => {
+        setCurrentText(text)
+        setKey((prev) => prev + 1) // Force TextScramble to re-render
+      }, 1200 * index) // Stagger the transitions
+    })
+
+    // Complete after the full sequence
+    setTimeout(
+      () => {
+        setOpacity(0)
+        setTimeout(() => onComplete(), 600)
+      },
+      1200 * (morphSequence.length - 1) + 1500,
+    )
+  }, [isVisible, onComplete])
+
+  if (!isVisible || stage === 0) return null
+
+  return (
+    <div
+      className="fixed inset-0 flex items-center justify-center bg-[#f5f2e9] text-[#2d2d2d] z-50 transition-opacity duration-600"
+      style={{ opacity }}
+    >
+      <div className="text-2xl font-pixel">
+        <TextScramble key={key} text={currentText} playOnMount={true} speed={1.2} />
+      </div>
+    </div>
+  )
+}
+
 // Puzzle component that must be solved to access the main page
 function PuzzleChallenge({ onSolved }: { onSolved: () => void }) {
   const [clues, setClues] = useState<string[]>(["glass blowing"])
@@ -21,8 +119,9 @@ function PuzzleChallenge({ onSolved }: { onSolved: () => void }) {
   const [showAnswer, setShowAnswer] = useState(false)
   const [isCorrect, setIsCorrect] = useState(false)
   const [fadeOut, setFadeOut] = useState(false)
-  const [shuffleOut, setShuffleOut] = useState(false)
+  const [showMorphingTransition, setShowMorphingTransition] = useState(false)
   const [showingAllClues, setShowingAllClues] = useState(false)
+  const transitionTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const allClues = ["glass blowing", "robots", "reading", "poker", "sleeping in"]
 
@@ -36,22 +135,49 @@ function PuzzleChallenge({ onSolved }: { onSolved: () => void }) {
     if (remainingClues.length > 0) {
       setClues([...clues, ...remainingClues])
       setShowingAllClues(true)
+
+      // Set a timeout to start transition after showing all clues
+      if (transitionTimeoutRef.current) {
+        clearTimeout(transitionTimeoutRef.current)
+      }
+
+      transitionTimeoutRef.current = setTimeout(() => {
+        startTransition()
+      }, 2000)
     } else {
-      // If all clues are already shown, proceed to transition
+      // If all clues are already shown, proceed to transition immediately
       startTransition()
     }
   }
 
   // Function to start the transition animation
   const startTransition = () => {
-    setShuffleOut(true)
-    setTimeout(() => {
-      setFadeOut(true)
-      setTimeout(() => {
-        onSolved()
-      }, 800)
-    }, 1500)
+    // Clear any pending timeouts
+    if (transitionTimeoutRef.current) {
+      clearTimeout(transitionTimeoutRef.current)
+      transitionTimeoutRef.current = null
+    }
+
+    // Start morphing transition
+    setShowMorphingTransition(true)
+
+    // Fade out the puzzle UI
+    setFadeOut(true)
   }
+
+  // Handle completion of morphing transition
+  const handleMorphingComplete = () => {
+    onSolved()
+  }
+
+  // Clean up timeouts when component unmounts
+  useEffect(() => {
+    return () => {
+      if (transitionTimeoutRef.current) {
+        clearTimeout(transitionTimeoutRef.current)
+      }
+    }
+  }, [])
 
   const handleSubmit = () => {
     if (!userInput.trim()) return
@@ -71,15 +197,11 @@ function PuzzleChallenge({ onSolved }: { onSolved: () => void }) {
 
     if (hasPranshu && hasKeyword) {
       setIsCorrect(true)
+      setUserInput("") // Clear input field
+
       // First reveal all remaining clues
       setTimeout(() => {
         revealAllClues()
-        // Wait a moment to let user see all clues before transition
-        setTimeout(() => {
-          if (!showingAllClues) {
-            startTransition()
-          }
-        }, 2500)
       }, 1200)
     } else {
       // Clear the input field for the next guess
@@ -107,83 +229,73 @@ function PuzzleChallenge({ onSolved }: { onSolved: () => void }) {
   }
 
   return (
-    <div
-      className={`fixed inset-0 flex items-center justify-center bg-[#f5f2e9] text-[#2d2d2d] z-50 transition-opacity duration-800 ${fadeOut ? "opacity-0" : "opacity-100"}`}
-    >
-      <div className="max-w-md w-full px-8 font-pixel">
-        <div className="mb-10 space-y-1">
-          {shuffleOut ? (
-            <TextScramble
-              text="Solve the puzzle by figuring out the common category connecting these clues."
-              playOnMount={true}
-              speed={1.5}
-              className="text-lg tracking-wide text-center mb-6 text-[#2d2d2d]"
-            />
-          ) : (
+    <>
+      <div
+        className={`fixed inset-0 flex items-center justify-center bg-[#f5f2e9] text-[#2d2d2d] z-40 transition-opacity duration-800 ${fadeOut ? "opacity-0" : "opacity-100"}`}
+      >
+        <div className="max-w-md w-full px-8 font-pixel">
+          <div className="mb-10 space-y-1">
             <p className="text-lg tracking-wide text-center mb-6 text-[#2d2d2d]">
               Solve the puzzle by figuring out the common category connecting these clues.
             </p>
+
+            <div className="space-y-3">
+              {clues.map((clue, index) => (
+                <div
+                  key={index}
+                  className={`text-xl text-center py-2 border-b border-[#b45309]/20 ${
+                    index === currentClueIndex && !isCorrect ? "text-[#b45309]" : "text-[#2d2d2d]"
+                  } ${showingAllClues && !clues.includes(allClues[index]) ? "text-[#b45309]" : ""}`}
+                >
+                  {clue}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {previousGuesses.length > 0 && !isCorrect && (
+            <div className="mb-8 flex flex-wrap justify-center gap-2">
+              {previousGuesses.map((guess, index) => (
+                <div key={index} className="line-through text-gray-500 px-2 py-1 bg-[#e7e5de] rounded-md text-sm">
+                  {guess}
+                </div>
+              ))}
+            </div>
           )}
 
-          <div className="space-y-3">
-            {clues.map((clue, index) => (
-              <div
-                key={index}
-                className={`text-xl text-center py-2 border-b border-[#b45309]/20 ${
-                  index === currentClueIndex && !isCorrect ? "text-[#b45309]" : "text-[#2d2d2d]"
-                } ${showingAllClues && !clues.includes(allClues[index]) ? "text-[#b45309]" : ""}`}
+          {showAnswer ? (
+            <div className="text-[#b45309] text-center text-xl mb-4 animate-pulse">Answer: Things Pranshu enjoys</div>
+          ) : isCorrect ? (
+            <div className="text-[#b45309] text-center text-xl mb-4 animate-pulse">Correct!</div>
+          ) : (
+            <div className="flex flex-col gap-3 mb-4">
+              <input
+                type="text"
+                value={userInput}
+                onChange={(e) => setUserInput(e.target.value)}
+                onKeyUp={handleKeyUp}
+                placeholder="Enter your answer here"
+                className="w-full px-4 py-3 rounded-md bg-[#e7e5de] border border-[#b45309]/30 focus:outline-none focus:border-[#b45309] focus:ring-1 focus:ring-[#b45309] transition-all text-center font-pixel text-[#2d2d2d]"
+                autoFocus
+                disabled={fadeOut || isCorrect}
+              />
+              <button
+                onClick={handleSubmit}
+                className="w-full px-4 py-3 bg-[#e7e5de] text-[#b45309] rounded-md hover:bg-[#b45309]/10 transition-colors border border-[#b45309]/30"
+                disabled={fadeOut || isCorrect}
               >
-                {shuffleOut ? <TextScramble text={clue} playOnMount={true} speed={1.5} /> : clue}
-              </div>
-            ))}
-          </div>
+                Submit
+              </button>
+            </div>
+          )}
         </div>
-
-        {previousGuesses.length > 0 && !shuffleOut && !isCorrect && (
-          <div className="mb-8 flex flex-wrap justify-center gap-2">
-            {previousGuesses.map((guess, index) => (
-              <div key={index} className="line-through text-gray-500 px-2 py-1 bg-[#e7e5de] rounded-md text-sm">
-                {shuffleOut ? <TextScramble text={guess} playOnMount={true} speed={1.5} /> : guess}
-              </div>
-            ))}
-          </div>
-        )}
-
-        {showAnswer ? (
-          <div className="text-[#b45309] text-center text-xl mb-4 animate-pulse">
-            {shuffleOut ? (
-              <TextScramble text="Answer: Things Pranshu enjoys" playOnMount={true} speed={1.5} />
-            ) : (
-              "Answer: Things Pranshu enjoys"
-            )}
-          </div>
-        ) : isCorrect ? (
-          <div className="text-[#b45309] text-center text-xl mb-4 animate-pulse">
-            {shuffleOut ? <TextScramble text="Correct!" playOnMount={true} speed={1.5} /> : "Correct!"}
-          </div>
-        ) : (
-          <div className="flex flex-col gap-3 mb-4">
-            <input
-              type="text"
-              value={userInput}
-              onChange={(e) => setUserInput(e.target.value)}
-              onKeyUp={handleKeyUp}
-              placeholder="Enter your answer here"
-              className="w-full px-4 py-3 rounded-md bg-[#e7e5de] border border-[#b45309]/30 focus:outline-none focus:border-[#b45309] focus:ring-1 focus:ring-[#b45309] transition-all text-center font-pixel text-[#2d2d2d]"
-              autoFocus
-              disabled={shuffleOut}
-            />
-            <button
-              onClick={handleSubmit}
-              className="w-full px-4 py-3 bg-[#e7e5de] text-[#b45309] rounded-md hover:bg-[#b45309]/10 transition-colors border border-[#b45309]/30"
-              disabled={shuffleOut}
-            >
-              {shuffleOut ? <TextScramble text="Submit" playOnMount={true} speed={1.5} /> : "Submit"}
-            </button>
-          </div>
-        )}
       </div>
-    </div>
+
+      {/* Morphing transition overlay */}
+      {showMorphingTransition && (
+        <MorphingTransition isVisible={showMorphingTransition} onComplete={handleMorphingComplete} />
+      )}
+    </>
   )
 }
 
@@ -191,7 +303,6 @@ function PuzzleChallenge({ onSolved }: { onSolved: () => void }) {
 function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
   const [loadingPercentage, setLoadingPercentage] = useState(0)
   const [isTransitioning, setIsTransitioning] = useState(false)
-  const [useScramble, setUseScramble] = useState(false)
   const startTimeRef = useRef<number | null>(null)
   const duration = 3000 // 3 seconds for the loading animation
 
@@ -215,10 +326,7 @@ function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
       } else {
         // Start transition when loading completes
         setIsTransitioning(true)
-        setUseScramble(true) // Enable text scramble for the transition
-        setTimeout(() => {
-          onComplete()
-        }, 1200) // Delay to allow for scramble animation
+        // onComplete will be called by the GlitchTransition component
       }
     }
 
@@ -267,86 +375,21 @@ function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
   }, [loadingPercentage])
 
   return (
-    <div className="fixed inset-0 flex flex-col items-center justify-center bg-[#f5f2e9] text-[#2d2d2d]">
-      <div className="relative w-40 h-40 mb-8">
-        <canvas ref={canvasRef} className="w-full h-full" />
-      </div>
-
+    <>
       <div
-        className={`text-center font-pixel transition-all duration-500 ${
-          isTransitioning && !useScramble ? "opacity-0 scale-110" : "opacity-100"
-        }`}
+        className={`fixed inset-0 flex flex-col items-center justify-center bg-[#f5f2e9] text-[#2d2d2d] transition-opacity duration-600 ${isTransitioning ? "opacity-0" : "opacity-100"}`}
       >
-        {useScramble ? (
-          <TextScramble text={`loading: ${loadingPercentage}%`} playOnMount={true} speed={1.2} />
-        ) : (
+        <div className="relative w-40 h-40 mb-8">
+          <canvas ref={canvasRef} className="w-full h-full" />
+        </div>
+
+        <div className="font-pixel">
           <div className="whitespace-nowrap">loading: {loadingPercentage}%</div>
-        )}
+        </div>
       </div>
-    </div>
-  )
-}
 
-// Transition component that handles the text shuffle effect
-function TransitionEffect({ isVisible, onComplete }: { isVisible: boolean; onComplete: () => void }) {
-  const [stage, setStage] = useState(0)
-  const [opacity, setOpacity] = useState(1)
-
-  useEffect(() => {
-    if (isVisible) {
-      // Sequence of transitions
-      const timeline = [
-        // Fade in
-        () => {
-          setOpacity(1)
-          setStage(1) // "loading: 100%"
-        },
-        // First transition
-        () => {
-          setStage(2) // "Pranshu Rao"
-        },
-        // Fade out
-        () => {
-          setOpacity(0)
-        },
-        // Complete
-        () => {
-          onComplete()
-        },
-      ]
-
-      // Execute the timeline with appropriate delays
-      let delay = 0
-      timeline.forEach((action, index) => {
-        setTimeout(action, delay)
-        delay += index === 0 ? 200 : 800 // Shorter first delay, longer for transitions
-      })
-
-      return () => {
-        // Clear any pending timeouts if component unmounts
-        for (let i = 0; i < timeline.length; i++) {
-          clearTimeout(delay * i)
-        }
-      }
-    }
-  }, [isVisible, onComplete])
-
-  if (!isVisible) return null
-
-  // Determine what text to show based on stage
-  let text = ""
-  if (stage === 1) text = "loading: 100%"
-  else if (stage === 2) text = "Pranshu Rao"
-
-  return (
-    <div
-      className="fixed inset-0 flex items-center justify-center bg-[#f5f2e9] text-[#2d2d2d] z-50 transition-opacity duration-500"
-      style={{ opacity }}
-    >
-      <div className="text-2xl font-pixel">
-        {stage > 0 && <TextScramble key={stage} text={text} playOnMount={true} speed={1.2} />}
-      </div>
-    </div>
+      {isTransitioning && <GlitchTransition isVisible={true} onComplete={onComplete} text="ready" duration={1500} />}
+    </>
   )
 }
 
@@ -415,7 +458,6 @@ function AgeDisplay() {
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true)
   const [showPuzzle, setShowPuzzle] = useState(false)
-  const [showTransition, setShowTransition] = useState(false)
   const [contentVisible, setContentVisible] = useState(false)
 
   // Function to handle loading completion
@@ -427,16 +469,8 @@ export default function Home() {
   // Function to handle puzzle solved
   const handlePuzzleSolved = () => {
     setShowPuzzle(false)
-    setShowTransition(true)
-  }
-
-  // Function to handle transition completion
-  const handleTransitionComplete = () => {
-    setShowTransition(false)
-    // Add a small delay before showing content
-    setTimeout(() => {
-      setContentVisible(true)
-    }, 100)
+    // Show main content immediately
+    setContentVisible(true)
   }
 
   // Function to reload the page
@@ -451,11 +485,7 @@ export default function Home() {
 
       {!isLoading && showPuzzle && <PuzzleChallenge onSolved={handlePuzzleSolved} />}
 
-      {!isLoading && !showPuzzle && showTransition && (
-        <TransitionEffect isVisible={showTransition} onComplete={handleTransitionComplete} />
-      )}
-
-      {!isLoading && !showPuzzle && !showTransition && contentVisible && (
+      {!isLoading && !showPuzzle && contentVisible && (
         <main
           className={`flex h-full min-h-screen w-full flex-col items-center justify-start p-8 pt-16 text-sm transition-all duration-1000 sm:p-16 sm:pt-16 ${
             contentVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
