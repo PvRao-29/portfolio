@@ -286,7 +286,7 @@ export default function Home() {
                   {/* Fix the alignment of "Currently in" and "Age" by removing the pl-5 class and aligning them with the name */}
                   <div className="text-[#78716c] flex items-center">
                     <div className="inline-block w-3 h-3 bg-[#b45309] rounded-full mr-2 animate-pulse"></div>
-                    <TextScramble text="Currently in: Berkeley, CA" />
+                    <TextScramble text="Currently in: Winnetka, IL" />
                   </div>
 
                   {/* Age display with improved styling and alignment fixed */}
@@ -322,7 +322,7 @@ export default function Home() {
                 <section>
                   <p className="mb-5">Hi, I'm Pranshu.</p>
                   <p className="mb-5">
-                    I'm a first-year EECS major at UC Berkeley, minoring in Philosophy, originally from Winnetka, IL. I
+                    I'm a second-year EECS major at UC Berkeley, minoring in Philosophy, originally from Winnetka, IL. I
                     am interested in the use of mathematical modeling and machine learning in real world predictive
                     systems.
                   </p>
