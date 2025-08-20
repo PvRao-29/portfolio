@@ -12,32 +12,54 @@ const ClientOnlyAgeDisplay = dynamic(() => Promise.resolve(AgeDisplay), {
   ssr: false, // This prevents server-side rendering
 })
 
-// Glitch transition component
+// Enhanced Glitch transition component that can handle multiple texts
 function GlitchTransition({
   isVisible,
   onComplete,
-  text,
+  texts,
   duration = 2000,
 }: {
   isVisible: boolean
   onComplete: () => void
-  text: string
+  texts: string[]
   duration?: number
 }) {
   const [opacity, setOpacity] = useState(1)
+  const [currentTextIndex, setCurrentTextIndex] = useState(0)
+  const [key, setKey] = useState(0)
 
   useEffect(() => {
-    if (isVisible) {
-      // Initial state
-      setOpacity(1)
+    if (!isVisible) return
 
-      // Fade out after duration
+    // Initial state
+    setOpacity(1)
+    setCurrentTextIndex(0)
+    setKey(0)
+
+    // Handle sequence of texts
+    if (texts.length > 1) {
+      texts.forEach((_, index) => {
+        if (index === 0) return // Skip first text as it's already set
+
+        setTimeout(() => {
+          setCurrentTextIndex(index)
+          setKey((prev) => prev + 1) // Force TextScramble to re-render
+        }, duration * index) // Each text gets its own duration
+      })
+
+      // Fade out after all texts have been shown
+      setTimeout(() => {
+        setOpacity(0)
+        setTimeout(() => onComplete(), 400)
+      }, duration * texts.length)
+    } else {
+      // Single text behavior (original)
       setTimeout(() => {
         setOpacity(0)
         setTimeout(() => onComplete(), 400)
       }, duration)
     }
-  }, [isVisible, duration, onComplete])
+  }, [isVisible, duration, onComplete, texts])
 
   if (!isVisible) return null
 
@@ -47,321 +69,9 @@ function GlitchTransition({
       style={{ opacity }}
     >
       <div className="text-2xl font-pixel">
-        <TextScramble text={text} playOnMount={true} speed={1.2} />
+        <TextScramble key={key} text={texts[currentTextIndex]} playOnMount={true} speed={1.2} />
       </div>
     </div>
-  )
-}
-
-// Morphing transition component
-function MorphingTransition({
-  isVisible,
-  onComplete,
-}: {
-  isVisible: boolean
-  onComplete: () => void
-}) {
-  const [currentText, setCurrentText] = useState("")
-  const [opacity, setOpacity] = useState(1)
-  const [stage, setStage] = useState(0)
-  const [key, setKey] = useState(0)
-
-  // Sequence of texts to morph through
-  const morphSequence = ["Things Pranshu enjoys", "Pranshu enjoys things", "Pranshu Rao"]
-
-  useEffect(() => {
-    if (!isVisible) return
-
-    // Start the morphing sequence
-    setStage(1)
-    setCurrentText(morphSequence[0])
-
-    // Create a sequence of text changes
-    morphSequence.forEach((text, index) => {
-      if (index === 0) return // Skip the first one as we've already set it
-
-      setTimeout(() => {
-        setCurrentText(text)
-        setKey((prev) => prev + 1) // Force TextScramble to re-render
-      }, 1200 * index) // Stagger the transitions
-    })
-
-    // Complete after the full sequence
-    setTimeout(
-      () => {
-        setOpacity(0)
-        setTimeout(() => onComplete(), 600)
-      },
-      1200 * (morphSequence.length - 1) + 1500,
-    )
-  }, [isVisible, onComplete])
-
-  if (!isVisible || stage === 0) return null
-
-  return (
-    <div
-      className="fixed inset-0 flex items-center justify-center bg-[#f5f2e9] text-[#2d2d2d] z-50 transition-opacity duration-600"
-      style={{ opacity }}
-    >
-      <div className="text-2xl font-pixel">
-        <TextScramble key={key} text={currentText} playOnMount={true} speed={1.2} />
-      </div>
-    </div>
-  )
-}
-
-// Smooth reveal text component
-function SmoothRevealText({ text, delay = 50, onComplete }: { text: string; delay?: number; onComplete?: () => void }) {
-  const [displayText, setDisplayText] = useState("")
-  const [isComplete, setIsComplete] = useState(false)
-  const [opacity, setOpacity] = useState(0)
-
-  useEffect(() => {
-    // Fade in the container
-    setOpacity(1)
-
-    // Reveal text character by character
-    let currentIndex = 0
-    const intervalId = setInterval(() => {
-      if (currentIndex <= text.length) {
-        setDisplayText(text.substring(0, currentIndex))
-        currentIndex++
-      } else {
-        clearInterval(intervalId)
-        setIsComplete(true)
-        if (onComplete) {
-          setTimeout(onComplete, 1000)
-        }
-      }
-    }, delay)
-
-    return () => clearInterval(intervalId)
-  }, [text, delay, onComplete])
-
-  return (
-    <div className="transition-opacity duration-500 text-center text-xl" style={{ opacity }}>
-      <span className={`text-[#b45309] ${isComplete ? "animate-pulse" : ""}`}>{displayText}</span>
-    </div>
-  )
-}
-
-// Puzzle component that must be solved to access the main page
-function PuzzleChallenge({ onSolved }: { onSolved: () => void }) {
-  const [clues, setClues] = useState<string[]>(["glass blowing"])
-  const [currentClueIndex, setCurrentClueIndex] = useState(0)
-  const [userInput, setUserInput] = useState("")
-  const [previousGuesses, setPreviousGuesses] = useState<string[]>([])
-  const [showAnswer, setShowAnswer] = useState(false)
-  const [isCorrect, setIsCorrect] = useState(false)
-  const [fadeOut, setFadeOut] = useState(false)
-  const [showMorphingTransition, setShowMorphingTransition] = useState(false)
-  const [showingAllClues, setShowingAllClues] = useState(false)
-  const [revealingClues, setRevealingClues] = useState(false)
-  const transitionTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const clueRevealTimeoutsRef = useRef<NodeJS.Timeout[]>([])
-
-  const allClues = ["glass blowing", "robots", "reading", "poker", "sleeping in"]
-
-  // Allowed keywords for the answer check
-  const allowedKeywords = ["thing", "things", "hobby", "hobbies", "like", "likes", "enjoy", "enjoys"]
-
-  // Function to reveal all remaining clues one by one
-  const revealAllClues = () => {
-    // Only proceed if we're not already revealing clues
-    if (revealingClues) return
-
-    // Get clues that aren't already shown
-    const remainingClues = allClues.filter((clue) => !clues.includes(clue))
-
-    if (remainingClues.length > 0) {
-      setRevealingClues(true)
-
-      // Reveal each clue one by one with a delay
-      remainingClues.forEach((clue, index) => {
-        const timeout = setTimeout(
-          () => {
-            setClues((prev) => [...prev, clue])
-
-            // If this is the last clue, set a timeout to start the transition
-            if (index === remainingClues.length - 1) {
-              setShowingAllClues(true)
-
-              if (transitionTimeoutRef.current) {
-                clearTimeout(transitionTimeoutRef.current)
-              }
-
-              transitionTimeoutRef.current = setTimeout(() => {
-                startTransition()
-                setRevealingClues(false)
-              }, 1500) // Wait a bit after the last clue before transitioning
-            }
-          },
-          800 * (index + 1),
-        ) // Stagger each clue reveal by 800ms
-
-        clueRevealTimeoutsRef.current.push(timeout)
-      })
-    } else {
-      // If all clues are already shown, proceed to transition immediately
-      startTransition()
-    }
-  }
-
-  // Function to start the transition animation
-  const startTransition = () => {
-    // Clear any pending timeouts
-    if (transitionTimeoutRef.current) {
-      clearTimeout(transitionTimeoutRef.current)
-      transitionTimeoutRef.current = null
-    }
-
-    // Start morphing transition
-    setShowMorphingTransition(true)
-
-    // Fade out the puzzle UI
-    setFadeOut(true)
-  }
-
-  // Handle completion of morphing transition
-  const handleMorphingComplete = () => {
-    onSolved()
-  }
-
-  // Clean up timeouts when component unmounts
-  useEffect(() => {
-    return () => {
-      if (transitionTimeoutRef.current) {
-        clearTimeout(transitionTimeoutRef.current)
-      }
-
-      // Clear all clue reveal timeouts
-      clueRevealTimeoutsRef.current.forEach((timeout) => clearTimeout(timeout))
-    }
-  }, [])
-
-  const handleSubmit = () => {
-    if (!userInput.trim()) return
-
-    // Add current guess to previous guesses
-    setPreviousGuesses([...previousGuesses, userInput])
-
-    // Normalize input: remove punctuation for easier matching
-    const normalized = userInput
-      .trim()
-      .toLowerCase()
-      .replace(/[^a-z0-9\s]/g, "")
-
-    // Check if normalized answer contains "pranshu" and any allowed keyword
-    const hasPranshu = normalized.indexOf("pranshu") !== -1
-    const hasKeyword = allowedKeywords.some((kw) => normalized.indexOf(kw) !== -1)
-
-    if (hasPranshu && hasKeyword) {
-      setIsCorrect(true)
-      setUserInput("") // Clear input field
-
-      // First reveal all remaining clues
-      setTimeout(() => {
-        revealAllClues()
-      }, 1200)
-    } else {
-      // Clear the input field for the next guess
-      setUserInput("")
-
-      // Reveal the next clue if available
-      if (currentClueIndex < allClues.length - 1) {
-        const nextIndex = currentClueIndex + 1
-        setCurrentClueIndex(nextIndex)
-        setClues([...clues, allClues[nextIndex]])
-      } else if (currentClueIndex === allClues.length - 1) {
-        // If all clues have been shown, reveal the answer
-        setShowAnswer(true)
-        // The transition will be started by the SmoothRevealText component's onComplete
-      }
-    }
-  }
-
-  const handleKeyUp = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      handleSubmit()
-    }
-  }
-
-  return (
-    <>
-      <div
-        className={`fixed inset-0 flex items-center justify-center bg-[#f5f2e9] text-[#2d2d2d] z-40 transition-opacity duration-800 ${fadeOut ? "opacity-0" : "opacity-100"}`}
-      >
-        <div className="max-w-md w-full px-8 font-pixel">
-          <div className="mb-10 space-y-1">
-            <p className="text-lg tracking-wide text-center mb-6 text-[#2d2d2d]">
-              Solve the puzzle by figuring out the common category connecting these clues.
-            </p>
-
-            <div className="space-y-3">
-              {clues.map((clue, index) => (
-                <div
-                  key={clue}
-                  className={`text-xl text-center py-2 border-b border-[#b45309]/20 
-                    ${index === currentClueIndex && !isCorrect ? "text-[#b45309]" : "text-[#2d2d2d]"}
-                    ${showingAllClues && !allClues.includes(clue) ? "text-[#b45309]" : ""}
-                    ${index >= currentClueIndex + 1 || (isCorrect && index > clues.indexOf(allClues[0])) ? "animate-fadeInDown" : ""}
-                  `}
-                >
-                  {clue}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {previousGuesses.length > 0 && !isCorrect && (
-            <div className="mb-8 flex flex-wrap justify-center gap-2">
-              {previousGuesses.map((guess, index) => (
-                <div key={index} className="line-through text-gray-500 px-2 py-1 bg-[#e7e5de] rounded-md text-sm">
-                  {guess}
-                </div>
-              ))}
-            </div>
-          )}
-
-          {showAnswer ? (
-            <div className="mb-4">
-              <SmoothRevealText
-                text="Answer: Things Pranshu enjoys"
-                delay={70}
-                onComplete={() => setTimeout(startTransition, 2000)}
-              />
-            </div>
-          ) : isCorrect ? (
-            <div className="text-[#b45309] text-center text-xl mb-4 animate-pulse">Correct!</div>
-          ) : (
-            <div className="flex flex-col gap-3 mb-4">
-              <input
-                type="text"
-                value={userInput}
-                onChange={(e) => setUserInput(e.target.value)}
-                onKeyUp={handleKeyUp}
-                placeholder="Enter your answer here"
-                className="w-full px-4 py-3 rounded-md bg-[#e7e5de] border border-[#b45309]/30 focus:outline-none focus:border-[#b45309] focus:ring-1 focus:ring-[#b45309] transition-all text-center font-pixel text-[#2d2d2d]"
-                autoFocus
-                disabled={fadeOut || isCorrect}
-              />
-              <button
-                onClick={handleSubmit}
-                className="w-full px-4 py-3 bg-[#e7e5de] text-[#b45309] rounded-md hover:bg-[#b45309]/10 transition-colors border border-[#b45309]/30"
-                disabled={fadeOut || isCorrect}
-              >
-                Submit
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Morphing transition overlay */}
-      {showMorphingTransition && (
-        <MorphingTransition isVisible={showMorphingTransition} onComplete={handleMorphingComplete} />
-      )}
-    </>
   )
 }
 
@@ -454,7 +164,9 @@ function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
         </div>
       </div>
 
-      {isTransitioning && <GlitchTransition isVisible={true} onComplete={onComplete} text="ready" duration={1500} />}
+      {isTransitioning && (
+        <GlitchTransition isVisible={true} onComplete={onComplete} texts={["ready", "Pranshu Rao"]} duration={1500} />
+      )}
     </>
   )
 }
@@ -524,19 +236,12 @@ function AgeDisplay() {
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true)
-  const [showPuzzle, setShowPuzzle] = useState(false)
   const [contentVisible, setContentVisible] = useState(false)
 
   // Function to handle loading completion
   const handleLoadingComplete = () => {
     setIsLoading(false)
-    setShowPuzzle(true)
-  }
-
-  // Function to handle puzzle solved
-  const handlePuzzleSolved = () => {
-    setShowPuzzle(false)
-    // Show main content immediately
+    // Show main content immediately after loading
     setContentVisible(true)
   }
 
@@ -550,9 +255,7 @@ export default function Home() {
     <>
       {isLoading && <LoadingAnimation onComplete={handleLoadingComplete} />}
 
-      {!isLoading && showPuzzle && <PuzzleChallenge onSolved={handlePuzzleSolved} />}
-
-      {!isLoading && !showPuzzle && contentVisible && (
+      {!isLoading && contentVisible && (
         <main
           className={`flex h-screen w-full flex-col justify-between transition-all duration-1000 ${
             contentVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
@@ -583,7 +286,7 @@ export default function Home() {
                   {/* Fix the alignment of "Currently in" and "Age" by removing the pl-5 class and aligning them with the name */}
                   <div className="text-[#78716c] flex items-center">
                     <div className="inline-block w-3 h-3 bg-[#b45309] rounded-full mr-2 animate-pulse"></div>
-                    <TextScramble text="Currently in: Dallas, TX" />
+                    <TextScramble text="Currently in: Berkeley, CA" />
                   </div>
 
                   {/* Age display with improved styling and alignment fixed */}
@@ -703,4 +406,3 @@ export default function Home() {
     </>
   )
 }
-
