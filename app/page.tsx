@@ -286,7 +286,7 @@ export default function Home() {
                   {/* Fix the alignment of "Currently in" and "Age" by removing the pl-5 class and aligning them with the name */}
                   <div className="text-[#78716c] flex items-center">
                     <div className="inline-block w-3 h-3 bg-[#b45309] rounded-full mr-2 animate-pulse"></div>
-                    <TextScramble text="Currently in: Winnetka, IL" />
+                    <TextScramble text="Currently in: Berkeley, CA" />
                   </div>
 
                   {/* Age display with improved styling and alignment fixed */}
