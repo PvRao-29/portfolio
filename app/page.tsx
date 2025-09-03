@@ -339,9 +339,9 @@ export default function Home() {
                       rel="noopener noreferrer"
                       className="text-[#2d2d2d] hover:text-[#b45309] transition-colors"
                     >
-                      Berkeley AI Research Lab
+                      Berkeley AI Research Lab 
                     </a>
-                    and
+                    and 
                     <a
                       href="https://sky.cs.berkeley.edu/"
                       target="_blank"
@@ -353,7 +353,7 @@ export default function Home() {
                     , where I work towards Model Scalability and Personalization.
                   </p>
                   <p className="mb-5">
-                    In addition to research, I also work on pushing the limits of machine cognition.
+                    In addition to research, I also work on pushing the limits of AI Applications.
                     This past summer I forecasted enterprise decision making at{" "}
                     <a
                       href="https://o9solutions.com/"
