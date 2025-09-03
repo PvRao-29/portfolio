@@ -332,20 +332,29 @@ export default function Home() {
                 <section>
                   {/* Add links to the company names with the same hover effect as the email */}
                   <p className="mb-5">
-                    Currently, I work as an engineer at{" "}
+                    Currently, I am an undergraduate researcher at {" "}
                     <a
-                      href="https://www.berkeleyse.org/"
+                      href="https://bair.berkeley.edu/"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-[#2d2d2d] hover:text-[#b45309] transition-colors"
                     >
-                      Space Enterprise at Berkeley
+                      Berkeley AI Research Lab
                     </a>
-                    , where I simulate the effects of fin flutter on rocket stability.
+                    and
+                    <a
+                      href="https://sky.cs.berkeley.edu/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#2d2d2d] hover:text-[#b45309] transition-colors"
+                    >
+                      Sky Computing Lab
+                    </a>
+                    , where I work towards Model Scalability and Personalization.
                   </p>
                   <p className="mb-5">
-                    In addition to sending mankind to space, I also work on pushing the limits of machine cognition.
-                    This summer I will be forecasting enterprise decision making at{" "}
+                    In addition to research, I also work on pushing the limits of machine cognition.
+                    This past summer I forecasted enterprise decision making at{" "}
                     <a
                       href="https://o9solutions.com/"
                       target="_blank"
@@ -374,7 +383,7 @@ export default function Home() {
                   </p>
                   <p className="mb-5">
                     I thrive on creative problem-solving—whether it's quantifying uncertainty at the poker table or
-                    engineering stability in the chaos of hypersonic flight.
+                    engineering stability amidst the complexity of 100 billion parameter models.
                   </p>
                 </section>
 
