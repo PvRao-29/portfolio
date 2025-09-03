@@ -339,9 +339,9 @@ export default function Home() {
                       rel="noopener noreferrer"
                       className="text-[#2d2d2d] hover:text-[#b45309] transition-colors"
                     >
-                      Berkeley AI Research Lab 
-                    </a>
-                    and 
+                      Berkeley AI Research Lab
+                    </a>{" "}
+                    and{" "}
                     <a
                       href="https://sky.cs.berkeley.edu/"
                       target="_blank"
