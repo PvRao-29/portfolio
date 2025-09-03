@@ -353,8 +353,8 @@ export default function Home() {
                     , where I work towards Model Scalability and Personalization.
                   </p>
                   <p className="mb-5">
-                    In addition to research, I also work on pushing the limits of AI Applications.
-                    This past summer I forecasted enterprise decision making at{" "}
+                    In addition to research, I work towards pushing the boundaries of applied AI. This past summer,
+                    I built forecasting systems for enterprise decision-making at{" "}
                     <a
                       href="https://o9solutions.com/"
                       target="_blank"
@@ -362,8 +362,8 @@ export default function Home() {
                       className="text-[#2d2d2d] hover:text-[#b45309] transition-colors"
                     >
                       o9 solutions
-                    </a>{" "}
-                    as a part of their engineering team.
+                    </a>
+                    , contributing production-ready models as a part of their engineering team.
                   </p>
                 </section>
 
@@ -379,11 +379,11 @@ export default function Home() {
                     >
                       felt
                     </a>
-                    , punting with a VPIP of 70%. Surprisingly, I am a profitable player.
+                    , punting with a VPIP of 50%. Surprisingly, I am a profitable player.
                   </p>
                   <p className="mb-5">
-                    I thrive on creative problem-solving—whether it's quantifying uncertainty at the poker table or
-                    engineering stability amidst the complexity of 100 billion parameter models.
+                    I thrive on creative problem-solving—whether it’s stabilizing
+                    100-billion-parameter models or finding edge in a game of imperfect information.
                   </p>
                 </section>
 
