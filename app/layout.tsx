@@ -36,16 +36,16 @@ export default function RootLayout({
               <TextScramble text="[Pranshu Rao]" />
             </Link>
             <Link
-              href="/writing"
-              className="transition-all duration-150 text-[#78716c] hover:text-[#b45309]"
-            >
-              <TextScramble text="[Writing]" />
-            </Link>
-            <Link
               href="/reading"
               className="transition-all duration-150 text-[#78716c] hover:text-[#b45309]"
             >
               <TextScramble text="[Reading]" />
+            </Link>
+            <Link
+              href="/writing"
+              className="transition-all duration-150 text-[#78716c] hover:text-[#b45309]"
+            >
+              <TextScramble text="[Writing]" />
             </Link>
           </div>
         </header>

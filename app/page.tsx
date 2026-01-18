@@ -252,8 +252,7 @@ export default function Home() {
                 <section>
                   <p className="mb-5">Hi, I'm Pranshu.</p>
                   <p className="mb-5">
-                    I'm a second-year EECS major at UC Berkeley, minoring in Philosophy, originally from Winnetka, IL. I
-                    am interested in the use of mathematical modeling and machine learning in real world predictive
+                    I am interested in the use of mathematical modeling and machine learning in real world predictive
                     systems.
                   </p>
                 </section>
@@ -280,11 +279,12 @@ export default function Home() {
                     >
                       Sky Computing Lab
                     </a>
-                    , where I work towards Model Scalability and Personalization.
+                    , where I work towards Model Scalability and Personalization. 
+                    My most recent work has focused on tuning black-box models using personalization 
+                    layers, in collaboration with the Google Gemini team.
                   </p>
                   <p className="mb-5">
-                    In addition to research, I work towards pushing the boundaries of applied AI. This past summer,
-                    I built forecasting systems for enterprise decision-making at{" "}
+                  Previously, I developed production-grade forecasting systems for enterprise decision-making at {" "}
                     <a
                       href="https://o9solutions.com/"
                       target="_blank"
@@ -293,7 +293,9 @@ export default function Home() {
                     >
                       o9 solutions
                     </a>
-                    , contributing production-ready models as a part of their engineering team.
+                  , shipping models used in real operational environments. Across research and 
+                  industry, my focus sits at the intersection of ML theory, systems, and performance—turning 
+                  ideas into deployable, efficient AI.{" "}
                   </p>
                 </section>
 
