@@ -139,12 +139,31 @@ function AgeDisplay() {
 }
 
 export default function Home() {
-  const [showIntro, setShowIntro] = useState(true)
+  const [showIntro, setShowIntro] = useState(false)
   const [contentVisible, setContentVisible] = useState(false)
+
+  // Only show the glitch intro the first time per session
+  useEffect(() => {
+    if (typeof window === "undefined") return
+
+    const hasShownIntro = window.sessionStorage.getItem("introShown")
+
+    if (hasShownIntro) {
+      // Skip intro on subsequent visits
+      setContentVisible(true)
+    } else {
+      // Show intro the first time
+      setShowIntro(true)
+    }
+  }, [])
 
   // Function to handle intro completion
   const handleIntroComplete = () => {
     setShowIntro(false)
+    // Mark intro as shown for this session
+    if (typeof window !== "undefined") {
+      window.sessionStorage.setItem("introShown", "true")
+    }
     // Show main content immediately after intro
     setContentVisible(true)
   }

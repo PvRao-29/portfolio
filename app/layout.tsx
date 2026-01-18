@@ -27,19 +27,25 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body>
-        <header className="w-full border-b border-[#2d2d2d]/10">
-          <div className="max-w-5xl mx-auto px-4 sm:px-8 py-4 flex items-center gap-6 text-sm text-[#78716c]">
+        <header className="w-full">
+          <div className="max-w-5xl mx-auto px-4 sm:px-8 pt-4 flex items-center gap-6 text-sm text-[#78716c]">
             <Link
               href="/"
-              className="transition-all duration-150 hover:text-[#b45309]"
+              className="transition-all duration-150 text-[#78716c] hover:text-[#b45309]"
             >
               <TextScramble text="[Pranshu Rao]" />
             </Link>
             <Link
               href="/writing"
-              className="transition-all duration-150 hover:text-[#b45309]"
+              className="transition-all duration-150 text-[#78716c] hover:text-[#b45309]"
             >
               <TextScramble text="[Writing]" />
+            </Link>
+            <Link
+              href="/reading"
+              className="transition-all duration-150 text-[#78716c] hover:text-[#b45309]"
+            >
+              <TextScramble text="[Reading]" />
             </Link>
           </div>
         </header>
