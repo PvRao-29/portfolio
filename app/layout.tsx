@@ -1,7 +1,9 @@
 import type React from "react"
 import type { Metadata } from "next"
+import Link from "next/link"
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { TextScramble } from "@/components/text-scramble"
 import "./globals.css"
 
 export const metadata: Metadata = {
@@ -25,6 +27,22 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body>
+        <header className="w-full border-b border-[#2d2d2d]/10">
+          <div className="max-w-5xl mx-auto px-4 sm:px-8 py-4 flex items-center gap-6 text-sm text-[#78716c]">
+            <Link
+              href="/"
+              className="transition-all duration-150 hover:text-[#b45309]"
+            >
+              <TextScramble text="[Pranshu Rao]" />
+            </Link>
+            <Link
+              href="/writing"
+              className="transition-all duration-150 hover:text-[#b45309]"
+            >
+              <TextScramble text="[Writing]" />
+            </Link>
+          </div>
+        </header>
         {children}
         <Analytics />
         <SpeedInsights />
