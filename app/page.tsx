@@ -250,12 +250,16 @@ export default function Home() {
               <div className="md:col-span-2 font-serif text-lg text-[#2d2d2d] border-l-2 border-[#b45309]/20 hover:border-[#b45309] transition-colors duration-300 pl-5 md:pl-6 py-2 space-y-6">
                 {/* Introduction section */}
                 <section>
-                  <p className="mb-5">Hi, I'm Pranshu.</p>
+                  <p className="mb-5">Hi, I’m Pranshu.</p>
                   <p className="mb-5">
-                    I am interested in the use of mathematical modeling and machine learning in real world predictive
-                    systems.
+                    I’m interested in using computation to tackle problems that resist clean analytic solutions.
+                    My focus is on designing efficient systems and building predictive models for complex,
+                    hard-to-model environments. Outside of work, I enjoy applying the same ideas to puzzles
+                    and games.
                   </p>
                 </section>
+              </div>
+
 
                 {/* Work section */}
                 <section>
@@ -293,9 +297,14 @@ export default function Home() {
                     >
                       o9 solutions
                     </a>
-                  , shipping models used in real operational environments. Across research and 
-                  industry, my focus sits at the intersection of ML theory, systems, and performance—turning 
-                  ideas into deployable, efficient AI.{" "}
+                  , shipping models used in real operational environments. 
+                  </p>
+                </section>
+                {/* Focus section */}
+                <section>
+                  <p>
+                  Across research and industry, my focus sits at the intersection of ML, 
+                  systems, and performance—turning ideas into deployable, efficient AI.{" "}
                   </p>
                 </section>
 
