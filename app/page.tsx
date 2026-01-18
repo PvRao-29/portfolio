@@ -3,7 +3,7 @@
 import type React from "react"
 
 import Link from "next/link"
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import { TextScramble } from "@/components/text-scramble"
 import dynamic from "next/dynamic"
 
@@ -75,102 +75,6 @@ function GlitchTransition({
   )
 }
 
-// Loading animation component
-function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
-  const [loadingPercentage, setLoadingPercentage] = useState(0)
-  const [isTransitioning, setIsTransitioning] = useState(false)
-  const startTimeRef = useRef<number | null>(null)
-  const duration = 3000 // 3 seconds for the loading animation
-
-  // Create a reference for the canvas element
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-
-  useEffect(() => {
-    // Function to handle loading progress
-    const updateLoading = (timestamp: number) => {
-      if (!startTimeRef.current) startTimeRef.current = timestamp
-
-      const elapsed = timestamp - startTimeRef.current
-      const progress = Math.min(elapsed / duration, 1)
-
-      // Update loading percentage
-      const newPercentage = Math.floor(progress * 100)
-      setLoadingPercentage(newPercentage)
-
-      if (progress < 1) {
-        requestAnimationFrame(updateLoading)
-      } else {
-        // Start transition when loading completes
-        setIsTransitioning(true)
-        // onComplete will be called by the GlitchTransition component
-      }
-    }
-
-    requestAnimationFrame(updateLoading)
-  }, [onComplete])
-
-  // Canvas animation effect
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-
-    const ctx = canvas.getContext("2d")
-    if (!ctx) return
-
-    // Set canvas dimensions
-    canvas.width = canvas.offsetWidth * window.devicePixelRatio
-    canvas.height = canvas.offsetHeight * window.devicePixelRatio
-
-    // Scale context to match device pixel ratio
-    ctx.scale(window.devicePixelRatio, window.devicePixelRatio)
-
-    // Clear canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-    // Draw a minimal, elegant loading animation
-    const centerX = canvas.offsetWidth / 2
-    const centerY = canvas.offsetHeight / 2
-    const radius = Math.min(centerX, centerY) * 0.6
-
-    // Draw progress arc
-    const startAngle = -Math.PI / 2
-    const endAngle = startAngle + (2 * Math.PI * loadingPercentage) / 100
-
-    ctx.beginPath()
-    ctx.arc(centerX, centerY, radius, startAngle, endAngle)
-    ctx.strokeStyle = "#b45309"
-    ctx.lineWidth = 2
-    ctx.stroke()
-
-    // Draw subtle background circle
-    ctx.beginPath()
-    ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI)
-    ctx.strokeStyle = "#e7e5de"
-    ctx.lineWidth = 1
-    ctx.stroke()
-  }, [loadingPercentage])
-
-  return (
-    <>
-      <div
-        className={`fixed inset-0 flex flex-col items-center justify-center bg-[#f5f2e9] text-[#2d2d2d] transition-opacity duration-600 ${isTransitioning ? "opacity-0" : "opacity-100"}`}
-      >
-        <div className="relative w-40 h-40 mb-8">
-          <canvas ref={canvasRef} className="w-full h-full" />
-        </div>
-
-        <div className="font-pixel">
-          <div className="whitespace-nowrap">loading: {loadingPercentage}%</div>
-        </div>
-      </div>
-
-      {isTransitioning && (
-        <GlitchTransition isVisible={true} onComplete={onComplete} texts={["ready", "Pranshu Rao"]} duration={1500} />
-      )}
-    </>
-  )
-}
-
 // Helper function to calculate age
 function calculateAge() {
   const birthDate = new Date("2006-10-29T02:30:00+05:30")
@@ -235,13 +139,13 @@ function AgeDisplay() {
 }
 
 export default function Home() {
-  const [isLoading, setIsLoading] = useState(true)
+  const [showIntro, setShowIntro] = useState(true)
   const [contentVisible, setContentVisible] = useState(false)
 
-  // Function to handle loading completion
-  const handleLoadingComplete = () => {
-    setIsLoading(false)
-    // Show main content immediately after loading
+  // Function to handle intro completion
+  const handleIntroComplete = () => {
+    setShowIntro(false)
+    // Show main content immediately after intro
     setContentVisible(true)
   }
 
@@ -253,9 +157,16 @@ export default function Home() {
 
   return (
     <>
-      {isLoading && <LoadingAnimation onComplete={handleLoadingComplete} />}
+      {showIntro && (
+        <GlitchTransition
+          isVisible={showIntro}
+          onComplete={handleIntroComplete}
+          texts={["Pranshu Rao"]}
+          duration={1500}
+        />
+      )}
 
-      {!isLoading && contentVisible && (
+      {contentVisible && (
         <main
           className={`flex h-screen w-full flex-col justify-between transition-all duration-1000 ${
             contentVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
@@ -364,26 +275,6 @@ export default function Home() {
                       o9 solutions
                     </a>
                     , contributing production-ready models as a part of their engineering team.
-                  </p>
-                </section>
-
-                {/* Personal interests section */}
-                <section>
-                  <p className="mb-5">
-                    In my spare time, you'll find me at the{" "}
-                    <a
-                      href="https://poker.studentorg.berkeley.edu/people.html"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[#2d2d2d] hover:text-[#b45309] transition-colors"
-                    >
-                      felt
-                    </a>
-                    , punting with a VPIP of 50%. Surprisingly, I am a profitable player.
-                  </p>
-                  <p className="mb-5">
-                    I thrive on creative problem-solving—whether it’s stabilizing
-                    100-billion-parameter models or finding edge in a game of imperfect information.
                   </p>
                 </section>
 
