@@ -252,20 +252,17 @@ export default function Home() {
                 <section>
                   <p className="mb-5">Hi, I’m Pranshu.</p>
                   <p className="mb-5">
-                    I’m interested in using computation to tackle problems that resist clean analytic solutions.
-                    My focus is on designing efficient systems and building predictive models for complex,
-                    hard-to-model environments. Outside of work, I enjoy applying the same ideas to puzzles
-                    and games.
+                    I’m interested in using computation to tackle problems that resist clean analytic solutions. My
+                    focus is on designing efficient systems and building predictive models for complex,
+                    hard-to-model environments. Outside of work, I enjoy applying the same ideas to puzzles and games.
                   </p>
                 </section>
-              </div>
-
 
                 {/* Work section */}
                 <section>
                   {/* Add links to the company names with the same hover effect as the email */}
                   <p className="mb-5">
-                    Currently, I am an undergraduate researcher at {" "}
+                    Currently, I am an undergraduate researcher at{" "}
                     <a
                       href="https://bair.berkeley.edu/"
                       target="_blank"
@@ -283,12 +280,11 @@ export default function Home() {
                     >
                       Sky Computing Lab
                     </a>
-                    , where I work towards Model Scalability and Personalization. 
-                    My most recent work has focused on tuning black-box models using personalization 
-                    layers, in collaboration with the Google Gemini team.
+                    , where I work towards Model Scalability and Personalization. My most recent work has focused on
+                    tuning black-box models using personalization layers, in collaboration with the Google Gemini team.
                   </p>
                   <p className="mb-5">
-                  Previously, I developed production-grade forecasting systems for enterprise decision-making at {" "}
+                    Previously, I developed production-grade forecasting systems for enterprise decision-making at{" "}
                     <a
                       href="https://o9solutions.com/"
                       target="_blank"
@@ -297,14 +293,15 @@ export default function Home() {
                     >
                       o9 solutions
                     </a>
-                  , shipping models used in real operational environments. 
+                    , shipping models used in real operational environments.
                   </p>
                 </section>
+
                 {/* Focus section */}
                 <section>
                   <p>
-                  Across research and industry, my focus sits at the intersection of ML, 
-                  systems, and performance—turning ideas into deployable, efficient AI.{" "}
+                    Across research and industry, my focus sits at the intersection of ML, systems, and
+                    performance—turning ideas into deployable, efficient AI.
                   </p>
                 </section>
 
