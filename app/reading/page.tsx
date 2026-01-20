@@ -10,7 +10,7 @@ export default function ReadingPage() {
           <section>
             <p className="mb-3">A loose log of things I&apos;m reading or re-reading.</p>
             <p className="text-[#78716c] text-base">
-              Not a ranked list—just papers and essays that are interesting enough to keep around.
+              A collection of reads I find interesting / have inspired me in some way.
             </p>
           </section>
 
