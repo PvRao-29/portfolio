@@ -300,15 +300,14 @@ export default function Home() {
                 {/* Focus section */}
                 <section>
                   <p>
-                    Across research and industry, my focus sits at the intersection of ML, systems, and
-                    performance—turning ideas into deployable, efficient AI.
+                  I’m partway through my undergraduate studies at UC Berkeley where I study EECS and Philosophy.
                   </p>
                 </section>
 
                 {/* Contact section without highlight box */}
                 <section>
                   <p>
-                    Always open to interesting conversations—reach me at{" "}
+                    Always open to interesting conversations and feedback on my writing—reach me at{" "}
                     <a
                       className="text-[#2d2d2d] hover:text-[#b45309] transition-colors"
                       href="mailto:pranshu_rao@berkeley.edu"
