@@ -27,21 +27,6 @@ export default function ReadingPage() {
               </a>
             </article>
 
-            {/* LEANN – Low-Storage Vector Index */}
-            <article className="space-y-1">
-              <div className="text-sm font-pixel text-[#78716c]">
-                <TextScramble text="[systems / retrieval]" />
-              </div>
-              <a
-                href="/reads/LEANN.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block text-lg hover:text-[#b45309] transition-colors"
-              >
-                <span className="italic">LEANN: A Low-Storage Vector Index</span>
-              </a>
-            </article>
-
             {/* AI-Newton – Concept-Driven Physical Law Discovery */}
             <article className="space-y-1">
               <div className="text-sm font-pixel text-[#78716c]">
@@ -56,6 +41,21 @@ export default function ReadingPage() {
                 <span className="italic">
                   AI-Newton: A Concept-Driven Physical Law Discovery System without Prior Physical Knowledge
                 </span>
+              </a>
+            </article>
+            
+            {/* LEANN – Low-Storage Vector Index */}
+            <article className="space-y-1">
+              <div className="text-sm font-pixel text-[#78716c]">
+                <TextScramble text="[systems / retrieval]" />
+              </div>
+              <a
+                href="/reads/LEANN.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block text-lg hover:text-[#b45309] transition-colors"
+              >
+                <span className="italic">LEANN: A Low-Storage Vector Index</span>
               </a>
             </article>
           </section>
