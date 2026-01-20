@@ -15,7 +15,7 @@ export default function ReadingPage() {
             {/* Nagel – What Is It Like to Be a Bat? */}
             <article className="space-y-1">
               <div className="text-sm font-pixel text-[#78716c]">
-                <TextScramble text="[philosophy of mind]" />
+                <TextScramble text="[philosophy]" />
               </div>
               <a
                 href="/reads/Nagel - What its like to be a Bat.pdf"
@@ -43,11 +43,11 @@ export default function ReadingPage() {
                 </span>
               </a>
             </article>
-            
+
             {/* LEANN – Low-Storage Vector Index */}
             <article className="space-y-1">
               <div className="text-sm font-pixel text-[#78716c]">
-                <TextScramble text="[systems / retrieval]" />
+                <TextScramble text="[ml systems / retrieval]" />
               </div>
               <a
                 href="/reads/LEANN.pdf"
