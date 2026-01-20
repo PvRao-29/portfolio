@@ -20,14 +20,14 @@ export default function ReadingPage() {
               <div className="text-sm font-pixel text-[#78716c]">
                 <TextScramble text="[philosophy of mind]" />
               </div>
-              <h2 className="text-lg">
-                Thomas Nagel –{" "}
-                <span className="italic">What Is It Like to Be a Bat?</span>
-              </h2>
-              <p className="text-[#78716c]">
-                The Philosophical Review, 83(4), 1974. A classic argument that any physical theory of mind has to make
-                sense of the subjective character of experience—what it is like <em>for</em> a creature to be itself.{" "}
-              </p>
+              <a
+                href="/reads/Nagel - What its like to be a Bat.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block text-lg hover:text-[#b45309] transition-colors"
+              >
+                Thomas Nagel – <span className="italic">What Is It Like to Be a Bat?</span>
+              </a>
             </article>
 
             {/* LEANN – Low-Storage Vector Index */}
@@ -35,13 +35,14 @@ export default function ReadingPage() {
               <div className="text-sm font-pixel text-[#78716c]">
                 <TextScramble text="[systems / retrieval]" />
               </div>
-              <h2 className="text-lg">
+              <a
+                href="/reads/LEANN.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block text-lg hover:text-[#b45309] transition-colors"
+              >
                 <span className="italic">LEANN: A Low-Storage Vector Index</span>
-              </h2>
-              <p className="text-[#78716c]">
-                An embedding index focused on keeping memory footprint small while preserving retrieval quality—useful
-                for making large-scale vector search actually deployable on real hardware.
-              </p>
+              </a>
             </article>
 
             {/* AI-Newton – Concept-Driven Physical Law Discovery */}
@@ -49,16 +50,16 @@ export default function ReadingPage() {
               <div className="text-sm font-pixel text-[#78716c]">
                 <TextScramble text="[scientific discovery / ml]" />
               </div>
-              <h2 className="text-lg">
+              <a
+                href="/reads/AI Newton.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block text-lg hover:text-[#b45309] transition-colors"
+              >
                 <span className="italic">
                   AI-Newton: A Concept-Driven Physical Law Discovery System without Prior Physical Knowledge
                 </span>
-              </h2>
-              <p className="text-[#78716c]">
-                A system that tries to recover human-interpretable physical laws directly from data, without hard-coding
-                the right equations in advance—a nice example of ML aimed at scientific understanding, not just
-                prediction.
-              </p>
+              </a>
             </article>
           </section>
         </div>
