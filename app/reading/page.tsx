@@ -8,10 +8,7 @@ export default function ReadingPage() {
       <div className="w-full max-w-5xl mx-auto px-4 pt-12 pb-8 sm:px-8 sm:pt-16 flex-grow flex items-center">
         <div className="w-full font-serif text-lg text-[#2d2d2d] space-y-8">
           <section>
-            <p className="mb-3">A loose log of things I&apos;m reading or re-reading.</p>
-            <p className="text-[#78716c] text-base">
-              A collection of reads I find interesting / have inspired me in some way.
-            </p>
+            <p className="mb-3">A collection of reads I find interesting / have inspired me in some way.</p>
           </section>
 
           <section className="space-y-6 text-base">
