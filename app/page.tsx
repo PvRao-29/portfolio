@@ -289,7 +289,7 @@ export default function Home() {
                       className="text-[#2d2d2d] hover:text-[#b45309] transition-colors"
                     >
                       Google Gemini
-                    </a>
+                    </a>{" "}
                     team.
                   </p>
                   <p className="mb-5">
@@ -325,7 +325,7 @@ export default function Home() {
                 {/* Contact section without highlight box */}
                 <section>
                   <p>
-                    Always open to interesting conversations and feedback on my writing—reach me at{" "}
+                    Always open to interesting conversations—reach me at{" "}
                     <a
                       className="text-[#2d2d2d] hover:text-[#b45309] transition-colors"
                       href="mailto:pranshu_rao@berkeley.edu"
