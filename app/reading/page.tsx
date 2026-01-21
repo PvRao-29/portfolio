@@ -27,6 +27,23 @@ export default function ReadingPage() {
               </a>
             </article>
 
+            {/* Exploring Cognitive Presence in GenAI-integrated Six-Hat Thinking */}
+            <article className="space-y-1">
+              <div className="text-sm font-pixel text-[#78716c]">
+                <TextScramble text="[education / ai]" />
+              </div>
+              <a
+                href="/reads/Exploring Cognitive Presence.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block text-lg hover:text-[#b45309] transition-colors"
+              >
+                <span className="italic">
+                  Exploring Cognitive Presence Patterns in GenAI-integrated Six-Hat Thinking Technique Scaffolded Discussion
+                </span>
+              </a>
+            </article>
+
             {/* AI-Newton – Concept-Driven Physical Law Discovery */}
             <article className="space-y-1">
               <div className="text-sm font-pixel text-[#78716c]">
