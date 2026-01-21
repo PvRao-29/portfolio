@@ -192,7 +192,7 @@ export default function Home() {
           }`}
         >
           {/* Content container with evenly distributed spacing */}
-          <div className="w-full max-w-5xl mx-auto px-4 pt-12 pb-8 sm:px-8 sm:pt-16 flex-grow flex items-center transition-all duration-[2000ms]">
+          <div className="w-full max-w-5xl mx-auto px-4 pt-8 pb-4 sm:px-8 sm:pt-10 flex-grow flex items-center transition-all duration-[2000ms]">
             {/* Main content grid with redesigned layout */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 w-full">
               {/* Left column - Bio header with improved spacing */}
@@ -322,7 +322,7 @@ export default function Home() {
           </div>
 
           {/* Footer positioned at the bottom */}
-          <footer className="w-full border-t border-[#2d2d2d]/10 py-4 mt-auto">
+          <footer className="w-full border-t border-[#2d2d2d]/10 py-3 mt-auto">
             <div className="max-w-5xl mx-auto px-4 sm:px-8 text-center text-[#78716c] text-sm">
               <TextScramble text="© 2025 Pranshu Rao" />
             </div>
