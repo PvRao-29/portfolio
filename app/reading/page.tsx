@@ -5,7 +5,7 @@ import { TextScramble } from "@/components/text-scramble"
 export default function ReadingPage() {
   return (
     <main className="flex min-h-screen w-full flex-col justify-between">
-      <div className="w-full max-w-5xl mx-auto px-4 pt-12 pb-8 sm:px-8 sm:pt-16 flex-grow flex items-center">
+      <div className="w-full max-w-5xl mx-auto px-4 pt-8 pb-8 sm:px-8 sm:pt-12 flex-grow flex items-center">
         <div className="w-full font-serif text-lg text-[#2d2d2d] space-y-8">
           <section>
             <p className="mb-3">A collection of reads I find interesting / have inspired me in some way.</p>
