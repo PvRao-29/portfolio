@@ -187,7 +187,7 @@ export default function Home() {
 
       {contentVisible && (
         <main
-          className={`flex h-screen w-full flex-col justify-between transition-all duration-1000 ${
+          className={`flex flex-1 w-full flex-col justify-between transition-all duration-1000 ${
             contentVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
           }`}
         >
@@ -324,7 +324,7 @@ export default function Home() {
           {/* Footer positioned at the bottom */}
           <footer className="w-full border-t border-[#2d2d2d]/10 py-3 mt-auto">
             <div className="max-w-5xl mx-auto px-4 sm:px-8 text-center text-[#78716c] text-sm">
-              <TextScramble text="© 2025 Pranshu Rao" />
+              <TextScramble text="© 2026 Pranshu Rao" />
             </div>
           </footer>
         </main>
