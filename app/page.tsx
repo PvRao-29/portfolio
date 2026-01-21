@@ -281,7 +281,16 @@ export default function Home() {
                       Sky Computing Lab
                     </a>
                     , where I work towards Model Scalability and Personalization. My most recent work has focused on
-                    tuning black-box models using personalization layers, in collaboration with the Google Gemini team.
+                    tuning black-box models using personalization layers, in collaboration with the{" "}
+                    <a
+                      href="https://deepmind.google/models/gemini/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#2d2d2d] hover:text-[#b45309] transition-colors"
+                    >
+                      Google Gemini
+                    </a>
+                    team.
                   </p>
                   <p className="mb-5">
                     Previously, I developed production-grade forecasting systems for enterprise decision-making at{" "}
