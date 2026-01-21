@@ -300,7 +300,16 @@ export default function Home() {
                 {/* Focus section */}
                 <section>
                   <p>
-                  I’m partway through my undergraduate studies at UC Berkeley where I study EECS and Philosophy.
+                  I’m partway through my undergraduate studies at{" "}
+                  <a
+                      href="https://www.berkeley.edu/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#2d2d2d] hover:text-[#b45309] transition-colors"
+                    >
+                      UC Berkeley
+                    </a>
+                  , where I study EECS and Philosophy.
                   </p>
                 </section>
 
