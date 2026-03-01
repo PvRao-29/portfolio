@@ -5,11 +5,25 @@ import { TextScramble } from "@/components/text-scramble"
 export default function WritingPage() {
   return (
     <main className="flex flex-1 w-full flex-col justify-between">
-      <div className="w-full max-w-5xl mx-auto px-4 pt-8 pb-4 sm:px-8 sm:pt-10 flex-grow flex items-center">
-        <div className="w-full font-serif text-lg text-[#2d2d2d]">
-          <p className="mb-5">
-            <TextScramble text="Writing coming soon." />
-          </p>
+      <div className="w-full max-w-5xl mx-auto px-4 pt-6 pb-4 sm:px-8 sm:pt-8 flex-grow flex items-center">
+        <div className="w-full font-serif text-lg text-[#2d2d2d] space-y-8">
+          <section>
+            <p className="mb-3">Essays and longer-form writing.</p>
+          </section>
+
+          <section className="space-y-6 text-base">
+            <article className="space-y-1">
+              <div className="text-sm font-pixel text-[#78716c]">
+                <TextScramble text="[Feb 25, 2026]" />
+              </div>
+              <a
+                href="/writing/degrees-of-freedom"
+                className="inline-block text-lg hover:text-[#b45309] transition-colors"
+              >
+                Degrees of Freedom
+              </a>
+            </article>
+          </section>
         </div>
       </div>
 
