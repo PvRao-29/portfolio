@@ -12,14 +12,14 @@ export default function WritingPage() {
           </section>
 
           <section className="space-y-6 text-base">
-            <article className="space-y-1">
-              <div className="text-sm font-pixel text-[#78716c]">
-                <TextScramble text="[Feb 25, 2026]" />
-              </div>
+            <article>
               <a
                 href="/writing/degrees-of-freedom"
-                className="inline-block text-lg hover:text-[#b45309] transition-colors"
+                className="inline-flex items-baseline gap-2 text-lg hover:text-[#b45309] transition-colors"
               >
+                <span className="text-sm font-pixel text-[#78716c]">
+                  <TextScramble text="[Feb 25, 2026]" />
+                </span>
                 Degrees of Freedom
               </a>
             </article>
