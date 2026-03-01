@@ -8,7 +8,7 @@ export default function WritingPage() {
       <div className="w-full max-w-5xl mx-auto px-4 pt-6 pb-4 sm:px-8 sm:pt-8 flex-grow flex items-center">
         <div className="w-full font-serif text-lg text-[#2d2d2d] space-y-8">
           <section>
-            <p className="mb-3">Essays and longer-form writing.</p>
+            <p className="mb-3">Just some thoughts.</p>
           </section>
 
           <section className="space-y-6 text-base">
