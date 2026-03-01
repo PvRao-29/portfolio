@@ -1,6 +1,7 @@
 "use client"
 
 import { TextScramble } from "@/components/text-scramble"
+import { GameOfLife } from "@/components/game-of-life"
 
 export default function DegreesOfFreedomPage() {
   return (
@@ -27,13 +28,15 @@ export default function DegreesOfFreedomPage() {
             </header>
 
             <div className="space-y-4 text-base leading-relaxed">
-              <figure className="my-8">
-                <img
-                  src="/writing/degrees-of-freedom/GameOfLife.gif"
-                  alt="Conway's Game of Life animation"
-                  width={800}
-                  height={480}
-                  className="w-full h-auto rounded border border-[#d4cfc4]"
+              <figure className="my-8 flex justify-center">
+                <GameOfLife
+                  width={120}
+                  height={72}
+                  cellSize={10}
+                  seed={29}
+                  aliveProb={0.3}
+                  frameIntervalMs={125}
+                  className="w-[1200px] max-w-full rounded border border-[#d4cfc4]"
                 />
               </figure>
             </div>
