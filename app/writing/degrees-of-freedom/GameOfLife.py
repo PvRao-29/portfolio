@@ -1,111 +1,123 @@
-"""
-Generate a Conway's Game of Life animation as a GIF.
-"""
+from __future__ import annotations
+
+import os
+from dataclasses import dataclass
+from typing import List, Tuple
 
 import numpy as np
 from PIL import Image
-import os
 
-class GameOfLife:
-    def __init__(self, width, height, seed=29):
-        self.width = width
-        self.height = height
-        self.cells = np.random.RandomState(seed).random((height, width)) > 0.7
 
-    def count_neighbors(self, x, y):
-        """Count live neighbors using toroidal wrapping"""
-        count = 0
-        for dx in [-1, 0, 1]:
-            for dy in [-1, 0, 1]:
-                if dx == 0 and dy == 0:
-                    continue
-                nx = (x + dx) % self.width
-                ny = (y + dy) % self.height
-                if self.cells[ny, nx]:
-                    count += 1
-        return count
-    
-    def step(self):
-        """Advance one generation"""
-        new_cells = np.zeros_like(self.cells)
-        for y in range(self.height):
-            for x in range(self.width):
-                neighbors = self.count_neighbors(x, y)
-                if self.cells[y, x]:  # Cell is alive
-                    new_cells[y, x] = neighbors in [2, 3]
-                else:  # Cell is dead
-                    new_cells[y, x] = neighbors == 3
-        self.cells = new_cells
-
-# Site theme colors (matches app/globals.css and writing pages)
 THEME = {
-    "background": (245, 242, 233),   # #f5f2e9 warm cream
-    "ink": (45, 45, 45),             # #2d2d2d primary text
-    "muted": (120, 113, 108),        # #78716c stone gray (dates, captions)
-    "accent": (180, 83, 9),          # #b45309 warm amber (hover)
-    "grid": (212, 207, 196),         # #d4cfc4 subtle warm gray for grid
+    "background": (245, 242, 233),
+    "ink": (45, 45, 45),
+    "muted": (120, 113, 108),
+    "accent": (180, 83, 9),
+    "grid": (212, 207, 196),
 }
 
 
-def create_image(cells, cell_size=8):
-    """Create a PIL Image from the cell state. Uses site theme colors."""
-    height, width = cells.shape
-    img_width = width * cell_size
-    img_height = height * cell_size
+@dataclass(frozen=True)
+class LifeConfig:
+    grid_width: int = 100
+    grid_height: int = 60
+    cell_size: int = 8
+    seed: int = 29
+    alive_prob: float = 0.30
+    frames: int = 120
+    frame_duration_ms: int = 125
+    output_file: str = "GameOfLife.gif"
 
-    img = Image.new("RGB", (img_width, img_height), color=THEME["background"])
-    pixels = img.load()
 
-    # Subtle grid first (so cells draw on top)
-    grid_color = THEME["grid"]
-    for x in range(0, img_width, cell_size):
-        for py in range(img_height):
-            pixels[x, py] = grid_color
-    for y in range(0, img_height, cell_size):
-        for px in range(img_width):
-            pixels[px, y] = grid_color
+class Life:
+    """Conway's Game of Life with toroidal wrapping."""
 
-    # Alive cells in site ink (#2d2d2d)
-    alive_color = THEME["ink"]
-    for y in range(height):
-        for x in range(width):
-            if cells[y, x]:
-                for py in range(cell_size - 1):
-                    for px in range(cell_size - 1):
-                        pixels[x * cell_size + px, y * cell_size + py] = alive_color
+    def __init__(self, width: int, height: int, seed: int = 29, alive_prob: float = 0.30):
+        self.width = int(width)
+        self.height = int(height)
+        rng = np.random.RandomState(seed)
+        self.state = rng.random((self.height, self.width)) < alive_prob
+
+    def step(self) -> None:
+        """Advance one generation using vectorized neighbor counting with toroidal wrapping."""
+        s = self.state.astype(np.uint8)
+
+        n = (
+            np.roll(np.roll(s, 1, axis=0), 1, axis=1) +
+            np.roll(s, 1, axis=0) +
+            np.roll(np.roll(s, 1, axis=0), -1, axis=1) +
+            np.roll(s, 1, axis=1) +
+            np.roll(s, -1, axis=1) +
+            np.roll(np.roll(s, -1, axis=0), 1, axis=1) +
+            np.roll(s, -1, axis=0) +
+            np.roll(np.roll(s, -1, axis=0), -1, axis=1)
+        )
+
+        alive = self.state
+        self.state = (alive & ((n == 2) | (n == 3))) | (~alive & (n == 3))
+
+
+def _draw_grid(img: Image.Image, cell_size: int, grid_color: Tuple[int, int, int]) -> None:
+    """Draw grid lines onto the image in place."""
+    w, h = img.size
+    px = img.load()
+    for x in range(0, w, cell_size):
+        for y in range(h):
+            px[x, y] = grid_color
+    for y in range(0, h, cell_size):
+        for x in range(w):
+            px[x, y] = grid_color
+
+
+def render_state(state: np.ndarray, cell_size: int, theme=THEME) -> Image.Image:
+    """Render a Life state into a PIL image using the provided theme."""
+    h, w = state.shape
+    img = Image.new("RGB", (w * cell_size, h * cell_size), color=theme["background"])
+    _draw_grid(img, cell_size, theme["grid"])
+
+    px = img.load()
+    alive_color = theme["ink"]
+
+    ys, xs = np.nonzero(state)
+    for y, x in zip(ys.tolist(), xs.tolist()):
+        ox, oy = x * cell_size, y * cell_size
+        for dy in range(cell_size - 1):
+            for dx in range(cell_size - 1):
+                px[ox + dx, oy + dy] = alive_color
 
     return img
 
-def generate_animation(output_file='gol_animation.gif', num_frames=120, grid_width=100, grid_height=60, cell_size=8):
-    """Generate Game of Life animation and save as GIF"""
-    
-    print(f"Generating Game of Life animation ({grid_width}x{grid_height})...")
-    print(f"Generating {num_frames} frames...")
-    
-    gol = GameOfLife(grid_width, grid_height)
-    frames = []
-    
-    for frame_num in range(num_frames):
-        if frame_num % 20 == 0:
-            print(f"  Frame {frame_num}/{num_frames}")
-        
-        img = create_image(gol.cells, cell_size)
-        frames.append(img)
-        gol.step()
-    
-    print(f"Saving animation to {output_file}...")
+
+def generate_gif(cfg: LifeConfig) -> str:
+    """Generate and save a Game of Life GIF animation."""
+    print(f"Generating Game of Life animation ({cfg.grid_width}x{cfg.grid_height})...")
+    print(f"Generating {cfg.frames} frames...")
+
+    life = Life(cfg.grid_width, cfg.grid_height, seed=cfg.seed, alive_prob=cfg.alive_prob)
+    frames: List[Image.Image] = []
+
+    for i in range(cfg.frames):
+        if i % 20 == 0:
+            print(f"  Frame {i}/{cfg.frames}")
+        frames.append(render_state(life.state, cfg.cell_size))
+        life.step()
+
+    print(f"Saving animation to {cfg.output_file}...")
     frames[0].save(
-        output_file,
+        cfg.output_file,
         save_all=True,
         append_images=frames[1:],
-        duration=125,  # 125ms per frame = ~8 fps
+        duration=cfg.frame_duration_ms,
         loop=0,
-        optimize=False
+        optimize=False,
     )
-    
-    file_size_mb = os.path.getsize(output_file) / (1024 * 1024)
-    print(f"✓ Animation saved! File size: {file_size_mb:.2f} MB")
-    print(f" Location: {os.path.abspath(output_file)}")
 
-if __name__ == '__main__':
-    generate_animation()
+    size_mb = os.path.getsize(cfg.output_file) / (1024 * 1024)
+    abs_path = os.path.abspath(cfg.output_file)
+    print(f"✓ Animation saved! File size: {size_mb:.2f} MB")
+    print(f" Location: {abs_path}")
+    return abs_path
+
+
+if __name__ == "__main__":
+    generate_gif(LifeConfig())
