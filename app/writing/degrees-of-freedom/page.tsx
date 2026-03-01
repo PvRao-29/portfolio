@@ -29,6 +29,16 @@ export default function DegreesOfFreedomPage() {
             <div className="space-y-4 text-base leading-relaxed">
               {/* Add your essay content here */}
               <p>Your content goes here.</p>
+
+              <figure className="my-8">
+                <img
+                  src="/writing/degrees-of-freedom/gol_animation.gif"
+                  alt="Conway's Game of Life animation"
+                  width={800}
+                  height={480}
+                  className="w-full h-auto rounded border border-[#d4cfc4]"
+                />
+              </figure>
             </div>
           </article>
         </div>
