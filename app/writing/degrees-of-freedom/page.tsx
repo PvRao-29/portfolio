@@ -27,9 +27,6 @@ export default function DegreesOfFreedomPage() {
             </header>
 
             <div className="space-y-4 text-base leading-relaxed">
-              {/* Add your essay content here */}
-              <p>Coming soon...</p>
-
               <figure className="my-8">
                 <img
                   src="/writing/degrees-of-freedom/GameOfLife.gif"
