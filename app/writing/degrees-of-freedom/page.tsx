@@ -28,7 +28,7 @@ export default function DegreesOfFreedomPage() {
 
             <div className="space-y-4 text-base leading-relaxed">
               {/* Add your essay content here */}
-              <p>Your content goes here.</p>
+              <p>Coming soon...</p>
 
               <figure className="my-8">
                 <img
