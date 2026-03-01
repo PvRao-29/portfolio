@@ -32,7 +32,7 @@ export default function DegreesOfFreedomPage() {
 
               <figure className="my-8">
                 <img
-                  src="/writing/degrees-of-freedom/gol_animation.gif"
+                  src="/writing/degrees-of-freedom/GameOfLife.gif"
                   alt="Conway's Game of Life animation"
                   width={800}
                   height={480}
